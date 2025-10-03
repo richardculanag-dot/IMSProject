@@ -1,7 +1,11 @@
 import sys
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
-from PyQt6.QtCore import *
+from PyQt6.QtCore import Qt
+# import mysql.connector
+from mysql.connector import Error
+import pymysql
+
 
 class ButtonGroupManager:
     def __init__(self):
@@ -36,9 +40,9 @@ class CustomButton(QPushButton):
             self.setStyleSheet(f"background-color: {self.normal_color}; color: {self.text_color}; font-size: {self.font_size}px;")
         self._hovered = False
 
-    def mouseDoubleClickEvent(self, event):
+    def mousePressEvent(self, event):
         self.group_manager.select(self)
-        super().mouseDoubleClickEvent(event)
+        super().mousePressEvent(event)
 
     def set_selected(self, selected):
         self.selected = selected
@@ -54,10 +58,11 @@ class CustomButton(QPushButton):
 # Admin Dashboard
 # ---------------------------
 class AdminDashboard(QWidget):
-    def __init__(self, login_widget):
+    def __init__(self, login_widget, username):
         super().__init__()
         self.login_widget = login_widget
-        self.setWindowTitle("Admin Dashboard")
+        self.username = username
+        self.setWindowTitle("Admin")
         self.setWindowIcon(QIcon("images/compforgelogobgremoved.png"))
         self.setGeometry(10, 35, 1350, 650)
         self.setFixedSize(1350, 650)
@@ -107,7 +112,7 @@ class AdminDashboard(QWidget):
             text_color="rgb(60, 146, 193)", font_size=40
         )
         self.back_btn.setGeometry(20, 580, 50, 40)
-        self.back_btn.mouseDoubleClickEvent = self.handle_back_btn_double_click
+        self.back_btn.mousePressEvent = self.handle_back_btn_click
 
         topPanel = QWidget(self)
         topPanel.setGeometry(180, 10, 1160, 100)
@@ -119,7 +124,7 @@ class AdminDashboard(QWidget):
         analyticPanel.setStyleSheet("background-color: rgb(70, 70, 70)")
         analyticPanel.show()
 
-    def handle_back_btn_double_click(self, event):
+    def handle_back_btn_click(self, event):
         reply = QMessageBox.question(
             self, "Logout?", "Logout?",
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
@@ -131,10 +136,11 @@ class AdminDashboard(QWidget):
 # Staff Dashboard
 # ---------------------------
 class StaffDashboard(QWidget):
-    def __init__(self, login_widget):
+    def __init__(self, login_widget, username):
         super().__init__()
         self.login_widget = login_widget
-        self.setWindowTitle("Staff Dashboard")
+        self.username = username
+        self.setWindowTitle("Staff")
         self.setWindowIcon(QIcon("images/compforgelogobgremoved.png"))
         self.setGeometry(10, 35, 1350, 650)
         self.setFixedSize(1350, 650)
@@ -172,11 +178,18 @@ class StaffDashboard(QWidget):
         )
         self.category_btn.setGeometry(20, 310, 120, 40)
 
+        self.history_btn = CustomButton(
+            "History", buttonPanel,
+            "rgb(60, 146, 193)", "cyan", "cyan", self.button_group
+        )
+        self.history_btn.setGeometry(20, 390, 120, 40)
+
         self.account_btn = CustomButton(
             "Account", buttonPanel,
             "rgb(60, 146, 193)", "cyan", "cyan", self.button_group
         )
-        self.account_btn.setGeometry(20, 390, 120, 40)
+        self.account_btn.setGeometry(20, 470, 120, 40)
+        self.account_btn.clicked.connect(self.show_account_details)
 
         self.back_btn = CustomButton(
             "←", buttonPanel,
@@ -184,7 +197,7 @@ class StaffDashboard(QWidget):
             text_color="rgb(60, 146, 193)", font_size=40
         )
         self.back_btn.setGeometry(20, 580, 50, 40)
-        self.back_btn.mouseDoubleClickEvent = self.handle_back_btn_double_click
+        self.back_btn.mousePressEvent = self.handle_back_btn_click
 
         topPanel = QWidget(self)
         topPanel.setGeometry(180, 10, 1160, 100)
@@ -196,7 +209,7 @@ class StaffDashboard(QWidget):
         analyticPanel.setStyleSheet("background-color: rgb(70, 70, 70)")
         analyticPanel.show()
 
-    def handle_back_btn_double_click(self, event):
+    def handle_back_btn_click(self, event):
         reply = QMessageBox.question(
             self, "Logout?", "Logout?",
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
@@ -204,6 +217,33 @@ class StaffDashboard(QWidget):
         if reply == QMessageBox.StandardButton.Yes:
             self.close()
             self.login_widget.setVisible(True)
+    def show_account_details(self):
+        try:
+            conn = pymysql.connect(
+                host='localhost',
+                port=3360,
+                user='root',
+                password='',
+                database='ims'
+            )
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT username, fname, lname, role FROM accounts WHERE username=%s",
+                (self.username,)
+            )
+            result = cursor.fetchone()
+            cursor.close()
+            conn.close()
+
+            if result:
+                uname, fname, lname, role = result
+                details = f"Username: {uname}\nFirst Name: {fname}\nLast Name: {lname}\nRole: {role}"
+            else:
+                details = "Account details not found."
+
+            QMessageBox.information(self, "Account Details", details)
+        except Exception as e:
+            QMessageBox.critical(self, "Database Error", str(e))
 
 # ---------------------------
 # Login Widget
@@ -230,12 +270,13 @@ class LoginWidget(QWidget):
 
         self.password_input = QLineEdit(self)
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
+        self.password_input.setPlaceholderText("Enter password")
         self.password_input.setStyleSheet("background-color: rgb(60, 146, 193); color: black;")
         self.password_input.setGeometry(88, 250, 180, 30)
 
         # Login button
         self.login_button = QPushButton("Login", self)
-        self.login_button.setGeometry(88, 320, 180, 40)
+        self.login_button.setGeometry(88, 320, 180, 35)
         self.login_button.clicked.connect(self.handle_login)
         self.login_button.setStyleSheet("background-color:cyan; color: black; font-size: 14px; font-family: Arial")
         self.login_button.setDefault(True)
@@ -260,29 +301,53 @@ class LoginWidget(QWidget):
         image_widget.show()
 
     def handle_login(self):
-        role = self.role_input.text()
+        username = self.role_input.text()
         password = self.password_input.text()
 
-        # Dummy passwords for example
-        if role == "Admin" and password == "admin123":
-            self.admin_dashboard = AdminDashboard(self)
-            self.admin_dashboard.show()
-            self.setVisible(False)  # hide login
+        try:
+            print("Connecting...")
+            conn = pymysql.connect(
+                host='localhost',
+                port=3360,
+                user='root',
+                password='',
+                database='ims'
+            )
+            print("Connected!")
 
-        elif role == "Staff" and password == "staff123":
-            self.staff_dashboard = StaffDashboard(self)
-            self.staff_dashboard.show()
-            self.setVisible(False)  # hide login
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT role FROM accounts WHERE username=%s AND password=%s",
+                (username, password)
+            )
+            result = cursor.fetchone()
+            print("Query result:", result)
 
-        else:
-            QMessageBox.warning(self, "Login Failed", "Invalid role or password!")
+            cursor.close()
+            conn.close()
+
+            if result:
+                role = result[0]
+                if role == "Admin":
+                    self.admin_dashboard = AdminDashboard(self, username)
+                    self.admin_dashboard.show()
+                    self.setVisible(False)
+                elif role == "Staff":
+                    self.staff_dashboard = StaffDashboard(self, username)
+                    self.staff_dashboard.show()
+                    self.setVisible(False)
+            else:
+                QMessageBox.warning(self, "Error", "Invalid username or password")
+
+        except Exception as e:
+            print("Error:", e)
+            QMessageBox.critical(self, "Database Error", str(e))
 
     def toggle_password_visibility(self, state):
         if state == Qt.CheckState.Checked.value:
             self.password_input.setEchoMode(QLineEdit.EchoMode.Normal)
         else:
             self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
-
 
 # ---------------------------
 # Main Program
