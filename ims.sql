@@ -1,6 +1,8 @@
 -- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
+CREATE DATABASE IF NOT EXISTS ims;
+USE ims;
 --
 -- Host: 127.0.0.1:3360
 -- Generation Time: Oct 03, 2025 at 08:25 AM
