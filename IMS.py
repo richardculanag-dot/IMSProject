@@ -2,8 +2,9 @@ import sys
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import Qt
+from Staff import *
+from Admin import *
 import pymysql
-
 
 class ButtonGroupManager:
     def __init__(self):
@@ -52,203 +53,14 @@ class CustomButton(QPushButton):
     def deselect(self):
         self.set_selected(False)
 
-# ---------------------------
-# Admin Dashboard
-# ---------------------------
-class AdminDashboard(QWidget):
-    def __init__(self, login_widget, username):
-        super().__init__()
-        self.login_widget = login_widget
-        self.username = username
-        self.setWindowTitle("Admin")
-        self.setWindowIcon(QIcon("images/compforgelogobgremoved.png"))
-        self.setGeometry(10, 35, 1350, 650)
-        self.setFixedSize(1350, 650)
-        self.setStyleSheet("background-color:rgb( 40, 40, 40); border-radius: 10px;")
-
-        buttonPanel = QWidget(self)
-        buttonPanel.setGeometry(10, 10, 160, 630)
-        buttonPanel.setStyleSheet("background-color: rgb(70, 70, 70)")
-        buttonPanel.show()
-
-        image_widget = QLabel(buttonPanel)
-        image_widget.setGeometry(20, 5, 120, 120)
-        logo = QPixmap("images/compforgelogobgremoved.png")
-        image_widget.setPixmap(logo)
-        image_widget.setScaledContents(True)
-        image_widget.show()
-
-        self.button_group = ButtonGroupManager()
-
-        self.dashboard_btn = CustomButton(
-            "Dashboard", buttonPanel,
-            "rgb(60, 146, 193)", "cyan", "cyan", self.button_group
-        )
-        self.dashboard_btn.setGeometry(20, 150, 120, 40)
-
-        self.reports_btn = CustomButton(
-            "Reports", buttonPanel,
-            "rgb(60, 146, 193)", "cyan", "cyan", self.button_group
-        )
-        self.reports_btn.setGeometry(20, 230, 120, 40)
-
-        self.users_btn = CustomButton(
-            "Users", buttonPanel,
-            "rgb(60, 146, 193)", "cyan", "cyan", self.button_group
-        )
-        self.users_btn.setGeometry(20, 310, 120, 40)
-
-        self.logs_btn = CustomButton(
-            "Logs", buttonPanel,
-            "rgb(60, 146, 193)", "cyan", "cyan", self.button_group
-        )
-        self.logs_btn.setGeometry(20, 390, 120, 40)
-
-        self.back_btn = CustomButton(
-            "←", buttonPanel,
-            "rgb(70, 70, 70)", "rgb(40,40,40)", "rgb(40,40,40)", self.button_group,
-            text_color="rgb(60, 146, 193)", font_size=40
-        )
-        self.back_btn.setGeometry(20, 580, 50, 40)
-        self.back_btn.mousePressEvent = self.handle_back_btn_click
-
-        topPanel = QWidget(self)
-        topPanel.setGeometry(180, 10, 1160, 100)
-        topPanel.setStyleSheet("background-color: rgb(70, 70, 70)")
-        topPanel.show()
-
-        analyticPanel = QWidget(self)
-        analyticPanel.setGeometry(180, 120, 1160, 520)
-        analyticPanel.setStyleSheet("background-color: rgb(70, 70, 70)")
-        analyticPanel.show()
-
-    def handle_back_btn_click(self, event):
-        reply = QMessageBox.question(
-            self, "Logout?", "Logout?",
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-        )
-        if reply == QMessageBox.StandardButton.Yes:
-            self.close()
-            self.login_widget.setVisible(True)
-# ---------------------------
-# Staff Dashboard
-# ---------------------------
-class StaffDashboard(QWidget):
-    def __init__(self, login_widget, username):
-        super().__init__()
-        self.login_widget = login_widget
-        self.username = username
-        self.setWindowTitle("Staff")
-        self.setWindowIcon(QIcon("images/compforgelogobgremoved.png"))
-        self.setGeometry(10, 35, 1350, 650)
-        self.setFixedSize(1350, 650)
-        self.setStyleSheet("background-color:rgb( 40, 40, 40); border-radius: 10px;")
-
-        buttonPanel = QWidget(self)
-        buttonPanel.setGeometry(10, 10, 160, 630)
-        buttonPanel.setStyleSheet("background-color: rgb(70, 70, 70)")
-        buttonPanel.show()
-
-        image_widget = QLabel(buttonPanel)
-        image_widget.setGeometry(20, 5, 120, 120)
-        logo = QPixmap("images/compforgelogobgremoved.png")
-        image_widget.setPixmap(logo)
-        image_widget.setScaledContents(True)
-        image_widget.show()
-
-        self.button_group = ButtonGroupManager()
-
-        self.dashboard_btn = CustomButton(
-            "Dashboard", buttonPanel,
-            "rgb(60, 146, 193)", "cyan", "cyan", self.button_group
-        )
-        self.dashboard_btn.setGeometry(20, 150, 120, 40)
-
-        self.inventory_btn = CustomButton(
-            "Inventory", buttonPanel,
-            "rgb(60, 146, 193)", "cyan", "cyan", self.button_group
-        )
-        self.inventory_btn.setGeometry(20, 230, 120, 40)
-
-        self.category_btn = CustomButton(
-            "Category", buttonPanel,
-            "rgb(60, 146, 193)", "cyan", "cyan", self.button_group
-        )
-        self.category_btn.setGeometry(20, 310, 120, 40)
-
-        self.history_btn = CustomButton(
-            "History", buttonPanel,
-            "rgb(60, 146, 193)", "cyan", "cyan", self.button_group
-        )
-        self.history_btn.setGeometry(20, 390, 120, 40)
-
-        self.account_btn = CustomButton(
-            "Account", buttonPanel,
-            "rgb(60, 146, 193)", "cyan", "cyan", self.button_group
-        )
-        self.account_btn.setGeometry(20, 470, 120, 40)
-        self.account_btn.clicked.connect(self.show_account_details)
-
-        self.back_btn = CustomButton(
-            "←", buttonPanel,
-            "rgb(70, 70, 70)", "rgb(40,40,40)", "rgb(40,40,40)", self.button_group,
-            text_color="rgb(60, 146, 193)", font_size=40
-        )
-        self.back_btn.setGeometry(20, 580, 50, 40)
-        self.back_btn.mousePressEvent = self.handle_back_btn_click
-
-        topPanel = QWidget(self)
-        topPanel.setGeometry(180, 10, 1160, 100)
-        topPanel.setStyleSheet("background-color: rgb(70, 70, 70)")
-        topPanel.show()
-
-        analyticPanel = QWidget(self)
-        analyticPanel.setGeometry(180, 120, 1160, 520)
-        analyticPanel.setStyleSheet("background-color: rgb(70, 70, 70)")
-        analyticPanel.show()
-
-    def handle_back_btn_click(self, event):
-        reply = QMessageBox.question(
-            self, "Logout?", "Logout?",
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-        )
-        if reply == QMessageBox.StandardButton.Yes:
-            self.close()
-            self.login_widget.setVisible(True)
-    def show_account_details(self):
-        try:
-            conn = pymysql.connect(
-                host='localhost',
-                port=3360,
-                user='root',
-                password='',
-                database='ims'
-            )
-            cursor = conn.cursor()
-            cursor.execute(
-                "SELECT username, fname, lname, role FROM accounts WHERE username=%s",
-                (self.username,)
-            )
-            result = cursor.fetchone()
-            cursor.close()
-            conn.close()
-
-            if result:
-                uname, fname, lname, role = result
-                details = f"Username: {uname}\nFirst Name: {fname}\nLast Name: {lname}\nRole: {role}"
-            else:
-                details = "Account details not found."
-
-            QMessageBox.information(self, "Account Details", details)
-        except Exception as e:
-            QMessageBox.critical(self, "Database Error", str(e))
 
 # ---------------------------
 # Login Widget
 # ---------------------------
 class LoginWidget(QWidget):
-    def __init__(self):
+    def __init__(self, conn):
         super().__init__()
+        self.conn = conn
         self.setWindowTitle("CompForge")
         self.setWindowIcon(QIcon("images/compforgelogobgremoved.png"))
         self.setGeometry(540, 200, 350, 400)
@@ -303,17 +115,7 @@ class LoginWidget(QWidget):
         password = self.password_input.text()
 
         try:
-            print("Connecting...")
-            conn = pymysql.connect(
-                host='localhost',
-                port=3360,
-                user='root',
-                password='',
-                database='ims'
-            )
-            print("Connected!")
-
-            cursor = conn.cursor()
+            cursor = self.conn.cursor()
             cursor.execute(
                 "SELECT role FROM accounts WHERE username=%s AND password=%s",
                 (username, password)
@@ -322,16 +124,15 @@ class LoginWidget(QWidget):
             print("Query result:", result)
 
             cursor.close()
-            conn.close()
 
             if result:
                 role = result[0]
                 if role == "Admin":
-                    self.admin_dashboard = AdminDashboard(self, username)
+                    self.admin_dashboard = AdminDashboard(self, username, self.conn)
                     self.admin_dashboard.show()
                     self.setVisible(False)
                 elif role == "Staff":
-                    self.staff_dashboard = StaffDashboard(self, username)
+                    self.staff_dashboard = StaffDashboard(self, username, self.conn)
                     self.staff_dashboard.show()
                     self.setVisible(False)
             else:
@@ -352,7 +153,21 @@ class LoginWidget(QWidget):
 # ---------------------------
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    login = LoginWidget()
-    login.show()
-    sys.exit(app.exec())
+    print("Connecting...")
+    conn = pymysql.connect(
+        host="localhost",
+        port=3306,
+        user="root",
+        password="",
+        database="ims"
+    )
+    print("Connected!")
 
+    login = LoginWidget(conn)
+    login.show()
+    exit_code = app.exec()
+
+    conn.close()
+
+    sys.exit(exit_code)
+    
