@@ -2,8 +2,6 @@ import sys
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import Qt
-# import mysql.connector
-from mysql.connector import Error
 import pymysql
 
 
@@ -357,3 +355,4 @@ if __name__ == "__main__":
     login = LoginWidget()
     login.show()
     sys.exit(app.exec())
+
