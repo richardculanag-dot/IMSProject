@@ -1,13 +1,56 @@
 from IMS import *
+
+class AccountDetails(QWidget):
+    def __init__(self, parent, conn, username):
+        super().__init__(parent)
+        self.setGeometry(10, 10, 1140, 500)
+        self.setStyleSheet("background-color: rgb(100, 100, 100); border-radius: 10px;")
+        try:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT username, fname, lname, role FROM accounts WHERE username=%s",
+                (username,)
+            )
+            result = cursor.fetchone()
+            cursor.close()
+
+            if result:
+                uname, fname, lname, role = result
+
+                uname_label = QLabel(f"Username: {uname}", self)
+                fname_label = QLabel(f"First Name: {fname}", self)
+                lname_label = QLabel(f"Last Name: {lname}", self)
+                role_label = QLabel(f"Role: {role}", self)
+
+                uname_label.setGeometry(20, 20, 300, 40)
+                fname_label.setGeometry(20, 60, 300, 40)
+                lname_label.setGeometry(20, 100, 300, 40)
+                role_label.setGeometry(20, 140, 300, 40)
+
+                label_style = "background-color: rgb(70,70,70); color: white; font-size: 18px;"
+                uname_label.setStyleSheet(label_style)
+                fname_label.setStyleSheet(label_style)
+                lname_label.setStyleSheet(label_style)
+                role_label.setStyleSheet(label_style)
+            else:
+                QMessageBox.information(self, "Account Details", "Account details not found.")
+        except Exception as e:
+            QMessageBox.critical(self, "Database Error", str(e))
+
 # ---------------------------
 # Staff Dashboard
 # ---------------------------
+
 class StaffDashboard(QWidget):
     def __init__(self, login_widget, username, conn):
         super().__init__()
         self.login_widget = login_widget
         self.username = username
         self.conn = conn
+        self.account_details = None
+        self.inventory_details = None
+        self.dashboard_details = None
+        self.category_details = None
         self.setWindowTitle("Staff")
         self.setWindowIcon(QIcon("images/compforgelogobgremoved.png"))
         self.setGeometry(10, 35, 1350, 650)
@@ -30,32 +73,34 @@ class StaffDashboard(QWidget):
 
         self.dashboard_btn = CustomButton(
             "Dashboard", self.buttonPanel,
-            "rgb(60, 146, 193)", "cyan", "cyan", self.button_group
-        )
+            "rgb(60, 146, 193)", "rgb(77,254,209)", "cyan", self.button_group)
         self.dashboard_btn.setGeometry(20, 150, 120, 40)
+        self.dashboard_btn.clicked.connect(self.hide_details)
 
         self.inventory_btn = CustomButton(
             "Inventory", self.buttonPanel,
-            "rgb(60, 146, 193)", "cyan", "cyan", self.button_group
-        )
+            "rgb(60, 146, 193)", "rgb(77,254,209)", "cyan", self.button_group)
         self.inventory_btn.setGeometry(20, 230, 120, 40)
+        self.inventory_btn.clicked.connect(self.hide_details)
+
 
         self.category_btn = CustomButton(
             "Category", self.buttonPanel,
-            "rgb(60, 146, 193)", "cyan", "cyan", self.button_group
-        )
+            "rgb(60, 146, 193)", "rgb(77,254,209)", "cyan", self.button_group)
         self.category_btn.setGeometry(20, 310, 120, 40)
+        self.category_btn.clicked.connect(self.hide_details)
+
 
         self.history_btn = CustomButton(
             "History", self.buttonPanel,
-            "rgb(60, 146, 193)", "cyan", "cyan", self.button_group
-        )
+            "rgb(60, 146, 193)", "rgb(77,254,209)", "cyan", self.button_group)
         self.history_btn.setGeometry(20, 390, 120, 40)
+        self.history_btn.clicked.connect(self.hide_details)
+
 
         self.account_btn = CustomButton(
             "Account", self.buttonPanel,
-            "rgb(60, 146, 193)", "cyan", "cyan", self.button_group
-        )
+            "rgb(60, 146, 193)", "rgb(77,254,209)", "cyan", self.button_group)
         self.account_btn.setGeometry(20, 470, 120, 40)
         self.account_btn.clicked.connect(self.show_account_details)
 
@@ -97,39 +142,12 @@ class StaffDashboard(QWidget):
             self.login_widget.setVisible(True)
 
     def show_account_details(self):
-        try:
-            cursor = self.conn.cursor()
-            cursor.execute(
-                "SELECT username, fname, lname, role FROM accounts WHERE username=%s",
-                (self.username,)
-            )
-            result = cursor.fetchone()
-            cursor.close()
+        if self.account_details is not None:
+            self.account_details.setParent(None)
+            self.account_details.deleteLater()
+            self.account_details = None
+        self.account_details.setVisible(True)
 
-            if result:
-                uname, fname, lname, role = result
 
-                uname_label = QLabel(f"Username: {uname}", self.analyticPanel)
-                fname_label = QLabel(f"First Name: {fname}", self.analyticPanel)
-                lname_label = QLabel(f"Last Name: {lname}", self.analyticPanel)
-                role_label = QLabel(f"Role: {role}", self.analyticPanel)
-
-                uname_label.setGeometry(20, 20, 300, 40)
-                fname_label.setGeometry(20, 60, 300, 40)
-                lname_label.setGeometry(20, 100, 300, 40)
-                role_label.setGeometry(20, 140, 300, 40)
-
-                uname_label.setStyleSheet("color: white; font-size: 18px;")
-                fname_label.setStyleSheet("color: white; font-size: 18px;")
-                lname_label.setStyleSheet("color: white; font-size: 18px;")
-                role_label.setStyleSheet("color: white; font-size: 18px;")
-
-                uname_label.show()
-                fname_label.show()
-                lname_label.show()
-                role_label.show()
-
-            else:
-                QMessageBox.information(self, "Account Details", "Account details not found.")
-        except Exception as e:
-            QMessageBox.critical(self, "Database Error", str(e))
+    def hide_details(self):
+        self.account_details.setVisible(False)
