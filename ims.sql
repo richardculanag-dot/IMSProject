@@ -30,7 +30,7 @@ USE ims;
 -- Table structure for table `accounts`
 --
 
-CREATE TABLE `accounts` (
+CREATE TABLE IF NOT EXISTS `accounts` (
   `AccountID` int(11) NOT NULL AUTO_INCREMENT,
   `FName` varchar(100) NOT NULL,
   `LName` varchar(100) NOT NULL,
@@ -56,7 +56,7 @@ INSERT INTO `accounts` (`AccountID`, `FName`, `LName`, `UserName`, `Password`, `
 -- Table structure for table `category`
 --
 
-CREATE TABLE `category` (
+CREATE TABLE IF NOT EXISTS `category` (
   `CategoryID` int(11) NOT NULL,
   `CategoryName` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -65,7 +65,7 @@ CREATE TABLE `category` (
 -- Dumping data for table `category`
 --
 
-INSERT INTO `category` (`CategoryID`, `CategoryName`) VALUES
+INSERT INTO IF NOT EXISTS `category` (`CategoryID`, `CategoryName`) VALUES
 (1, 'Peripherals'),
 (2, 'Internals'),
 (3, 'Networking'),
@@ -77,7 +77,7 @@ INSERT INTO `category` (`CategoryID`, `CategoryName`) VALUES
 -- Table structure for table `logs`
 --
 
-CREATE TABLE `logs` (
+CREATE TABLE IF NOT EXISTS `logs` (
   `LogID` int(11) NOT NULL,
   `AccountID` int(11) NOT NULL,
   `ProductID` int(11) NOT NULL,
@@ -91,7 +91,7 @@ CREATE TABLE `logs` (
 -- Table structure for table `products`
 --
 
-CREATE TABLE `products` (
+CREATE TABLE IF NOT EXISTS `products` (
   `ProductID` int(11) NOT NULL,
   `ProductName` varchar(100) NOT NULL,
   `TypeID` int(11) NOT NULL,
@@ -109,7 +109,7 @@ CREATE TABLE `products` (
 -- Table structure for table `suppliers`
 --
 
-CREATE TABLE `suppliers` (
+CREATE TABLE IF NOT EXISTS `suppliers` (
   `SupplierID` int(11) NOT NULL,
   `SupplierName` varchar(100) NOT NULL,
   `ContactNumber` int(11) NOT NULL
@@ -121,7 +121,7 @@ CREATE TABLE `suppliers` (
 -- Table structure for table `type`
 --
 
-CREATE TABLE `type` (
+CREATE TABLE IF NOT EXISTS `type` (
   `TypeID` int(11) NOT NULL,
   `TypeName` varchar(100) NOT NULL,
   `CategoryID` int(11) NOT NULL
