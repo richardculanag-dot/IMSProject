@@ -28,14 +28,14 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `accounts` (
-  `AccountID` int(11) NOT NULL,
+  `AccountID` int(11) NOT NULL AUTO_INCREMENT,
   `FName` varchar(100) NOT NULL,
   `LName` varchar(100) NOT NULL,
   `UserName` varchar(100) NOT NULL,
-  `Password` int(11) NOT NULL,
-  `Role` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
-
+  `Password` varchar(255) NOT NULL,
+  `Role` varchar(50) NOT NULL,
+  PRIMARY KEY (`AccountID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 --
 -- Dumping data for table `accounts`
 --
