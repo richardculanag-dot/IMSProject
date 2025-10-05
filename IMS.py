@@ -17,7 +17,8 @@ class ButtonGroupManager:
         button.set_selected(True)
 
 class CustomButton(QPushButton):
-    def __init__(self, text, parent, normal_color, hover_color, click_color, group_manager, text_color="black", font_size=14):
+    def __init__(self, text, parent, normal_color, hover_color, click_color, group_manager, text_color="black",
+                 font_size=14):
         super().__init__(text, parent)
         self.normal_color = normal_color
         self.hover_color = hover_color
@@ -26,17 +27,20 @@ class CustomButton(QPushButton):
         self.font_size = font_size
         self.group_manager = group_manager
         self.selected = False
-        self.setStyleSheet(f"background-color: {self.normal_color}; color: {self.text_color}; font-size: {self.font_size}px;")
+        self.setStyleSheet(
+            f"background-color: {self.normal_color}; color: {self.text_color}; font-size: {self.font_size}px;")
         self._hovered = False
 
     def enterEvent(self, event):
         if not self.selected:
-            self.setStyleSheet(f"background-color: {self.hover_color}; color: {self.text_color}; font-size: {self.font_size}px;")
+            self.setStyleSheet(
+                f"background-color: {self.hover_color}; color: {self.text_color}; font-size: {self.font_size}px;")
         self._hovered = True
 
     def leaveEvent(self, event):
         if not self.selected:
-            self.setStyleSheet(f"background-color: {self.normal_color}; color: {self.text_color}; font-size: {self.font_size}px;")
+            self.setStyleSheet(
+                f"background-color: {self.normal_color}; color: {self.text_color}; font-size: {self.font_size}px;")
         self._hovered = False
 
     def mousePressEvent(self, event):
@@ -46,9 +50,11 @@ class CustomButton(QPushButton):
     def set_selected(self, selected):
         self.selected = selected
         if selected:
-            self.setStyleSheet(f"background-color: {self.click_color}; color: {self.text_color}; font-size: {self.font_size}px;")
+            self.setStyleSheet(
+                f"background-color: {self.click_color}; color: {self.text_color}; font-size: {self.font_size}px;")
         else:
-            self.setStyleSheet(f"background-color: {self.normal_color}; color: {self.text_color}; font-size: {self.font_size}px;")
+            self.setStyleSheet(
+                f"background-color: {self.normal_color}; color: {self.text_color}; font-size: {self.font_size}px;")
 
     def deselect(self):
         self.set_selected(False)
@@ -98,7 +104,7 @@ class LoginWidget(QWidget):
         self.show_password_cb.setStyleSheet("color: white; font-size: 10px")
         self.show_password_cb.stateChanged.connect(self.toggle_password_visibility)
 
-        image_label = QLabel("CompForge",self)
+        image_label = QLabel("CompForge", self)
         image_label.setStyleSheet("color:rgb(60, 146, 193); font-weight: bold; font-family: Burberry;")
         image_label.setGeometry(145, 120, 100, 30)
         image_label.show()
@@ -148,6 +154,7 @@ class LoginWidget(QWidget):
         else:
             self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
 
+
 # ---------------------------
 # Main Program
 # ---------------------------
@@ -170,4 +177,3 @@ if __name__ == "__main__":
     conn.close()
 
     sys.exit(exit_code)
-    
