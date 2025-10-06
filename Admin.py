@@ -17,21 +17,20 @@ class DashboardPanel(QWidget):
         title.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.main_layout.addWidget(title)
 
-        # ✅ Store widgets for refresh later
+        # Store widgets for refresh later
         self.summary_layout = QHBoxLayout()
         self.graph_layout = QHBoxLayout()
 
         self.main_layout.addLayout(self.summary_layout)
         self.main_layout.addLayout(self.graph_layout)
 
-        # ✅ Add low stock header layout (label + refresh button)
         low_stock_header = QHBoxLayout()
         self.low_stock_label = QLabel("Low Stock Products")
         self.low_stock_label.setStyleSheet("color: white; font-size: 14px; font-weight: bold;")
         self.low_stock_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
         low_stock_header.addWidget(self.low_stock_label)
 
-        # ✅ Refresh button
+        # Refresh button
         self.refresh_btn = QPushButton("⟳ Refresh")
         self.refresh_btn.setFixedWidth(100)
         self.refresh_btn.setStyleSheet("""
@@ -51,7 +50,7 @@ class DashboardPanel(QWidget):
 
         self.main_layout.addLayout(low_stock_header)
 
-        # ✅ Create low stock table
+        # Create low stock table
         self.low_stock_table = QTableWidget()
         self.low_stock_table.setColumnCount(4)
         self.low_stock_table.setHorizontalHeaderLabels(["Product Name", "Type", "Quantity", "Reorder Level"])
@@ -176,7 +175,7 @@ class DashboardPanel(QWidget):
         self.graph_layout.addWidget(FigureCanvas(fig3))
         plt.close(fig3)
 
-        # ✅ Update Low Stock Table
+        # Update Low Stock Table
         low_stock_data = data["low_stock_products"]
         self.low_stock_table.setRowCount(len(low_stock_data))
         for row, (product_name, type_name, quantity, reorder_level) in enumerate(low_stock_data):
@@ -1023,5 +1022,6 @@ class AdminDashboard(QWidget):
         if reply == QMessageBox.StandardButton.Yes:
             self.close()
             self.login_widget.setVisible(True)
+
 
 
