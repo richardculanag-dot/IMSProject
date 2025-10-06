@@ -11,19 +11,113 @@ class DashboardPanel(QWidget):
         self.setGeometry(10, 10, 1140, 500)
         self.setStyleSheet("background-color: rgb(70, 70, 70); border-radius: 10px;")
 
-        main_layout = QVBoxLayout(self)
+        self.main_layout = QVBoxLayout(self)
 
         # Title
         title = QLabel("Dashboard")
         title.setStyleSheet("color: white; font-size: 22px; font-weight: bold;")
         title.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        main_layout.addWidget(title)
+        self.main_layout.addWidget(title)
 
-        # Load dashboard data
+        # ✅ Store widgets for refresh later
+        self.summary_layout = QHBoxLayout()
+        self.graph_layout = QHBoxLayout()
+
+        self.main_layout.addLayout(self.summary_layout)
+        self.main_layout.addLayout(self.graph_layout)
+
+        # ✅ Add low stock header layout (label + refresh button)
+        low_stock_header = QHBoxLayout()
+        self.low_stock_label = QLabel("Low Stock Products")
+        self.low_stock_label.setStyleSheet("color: white; font-size: 14px; font-weight: bold;")
+        self.low_stock_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        low_stock_header.addWidget(self.low_stock_label)
+
+        # ✅ Refresh button
+        self.refresh_btn = QPushButton("⟳ Refresh")
+        self.refresh_btn.setFixedWidth(100)
+        self.refresh_btn.setStyleSheet("""
+            QPushButton {
+                background-color: rgb(50, 150, 200);
+                color: white;
+                border-radius: 8px;
+                padding: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: rgb(60, 170, 220);
+            }
+        """)
+        self.refresh_btn.clicked.connect(self.refresh_dashboard)
+        low_stock_header.addWidget(self.refresh_btn, alignment=Qt.AlignmentFlag.AlignRight)
+
+        self.main_layout.addLayout(low_stock_header)
+
+        # ✅ Create low stock table
+        self.low_stock_table = QTableWidget()
+        self.low_stock_table.setColumnCount(4)
+        self.low_stock_table.setHorizontalHeaderLabels(["Product Name", "Type", "Quantity", "Reorder Level"])
+        self.low_stock_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.low_stock_table.verticalHeader().setVisible(False)
+        self.low_stock_table.setStyleSheet("""
+            QTableWidget {
+                background-color: #f8f9fa;
+                alternate-background-color: #e9ecef;
+                gridline-color: #b0b0b0;
+                border-radius: 10px;
+                font-size: 13px;
+                selection-background-color: rgb(70,130,250);
+                selection-color: white;
+            }
+            QHeaderView::section {
+                background-color: rgb(50,150,200);
+                color: white;
+                font-weight: bold;
+                border: none;
+                padding: 6px;
+            }
+            QHeaderView::section:first { border-top-left-radius: 10px; }
+            QHeaderView::section:last { border-top-right-radius: 10px; }
+            QTableCornerButton::section { background-color: rgb(50,150,200); border: none; }
+            QScrollBar:vertical {
+                background: #e2e2e2;
+                width: 10px;
+                margin: 2px 0 2px 0;
+                border-radius: 5px;
+            }
+            QScrollBar::handle:vertical {
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 rgb(130,180,230), stop:1 rgb(90,150,210));
+                border-radius: 20px;
+                min-height: 20px;
+            }
+            QScrollBar::handle:vertical:hover {
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 rgb(150,200,250), stop:1 rgb(100,160,220));
+            }
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+                height: 0px;
+                background: none;
+            }
+        """)
+        self.main_layout.addWidget(self.low_stock_table)
+
+        self.refresh_dashboard()
+
+    def refresh_dashboard(self):
+        """Refresh all dashboard data"""
+        for i in reversed(range(self.summary_layout.count())):
+            widget = self.summary_layout.itemAt(i).widget()
+            if widget:
+                widget.setParent(None)
+        for i in reversed(range(self.graph_layout.count())):
+            widget = self.graph_layout.itemAt(i).widget()
+            if widget:
+                widget.setParent(None)
+
         data = self.fetch_dashboard_data()
 
         # Summary stats
-        summary_layout = QHBoxLayout()
         for label, value in [
             ("Total Categories", data["total_categories"]),
             ("Total Issued Items", data["total_stockout"]),
@@ -40,13 +134,13 @@ class DashboardPanel(QWidget):
                     font-size: 16px;
                 }
             """)
-            summary_layout.addWidget(box)
-        main_layout.addLayout(summary_layout)
+            self.summary_layout.addWidget(box)
 
-        # Graphs Layout
-        graph_layout = QHBoxLayout()
+        # Graphs
+        from matplotlib import pyplot as plt
+        from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
-        # 1️⃣ Pie Chart – Category Distribution
+        # Pie Chart – Category Distribution
         fig1, ax1 = plt.subplots(figsize=(3.8, 3.8))
         categories, counts = zip(*data["category_distribution"]) if data["category_distribution"] else ([], [])
         if categories:
@@ -54,97 +148,92 @@ class DashboardPanel(QWidget):
             ax1.set_title("Category Distribution", fontsize=10)
         else:
             ax1.text(0.5, 0.5, "No Data", ha='center', va='center')
-        canvas1 = FigureCanvas(fig1)
-        graph_layout.addWidget(canvas1)
+        self.graph_layout.addWidget(FigureCanvas(fig1))
 
-        # 2️⃣ Bar Graph – Top 5 Products by Quantity (Vertical)
-        fig2, ax2 = plt.subplots(figsize=(4.5, 3.8))
+        # Bar Graph – Top 5 Products by Quantity
+        fig2, ax2 = plt.subplots(figsize=(4.5, 2.2))
+        fig2.tight_layout(pad=2.0)
         product_names, quantities = zip(*data["top_products"]) if data["top_products"] else ([], [])
-
         if product_names:
             bars = ax2.bar(product_names, quantities)
             ax2.set_title("Top 5 Products by Quantity", fontsize=10)
-            ax2.set_xlabel("Product", fontsize=8)
-            ax2.set_ylabel("Quantity", fontsize=8)
-
-            # Rotate product names for readability
+            ax2.set_xticks(range(len(product_names)))
             ax2.set_xticklabels(product_names, rotation=30, ha='right', fontsize=7)
-            ax2.tick_params(axis='y', labelsize=8)
-
-            # Add quantity labels above each bar
             for bar in bars:
                 height = bar.get_height()
                 ax2.text(bar.get_x() + bar.get_width() / 2, height + 0.5, str(int(height)),
                          ha='center', va='bottom', fontsize=7, color='white')
         else:
             ax2.text(0.5, 0.5, "No Data", ha='center', va='center')
+        self.graph_layout.addWidget(FigureCanvas(fig2))
 
-        fig2.tight_layout(pad=2.0)
-        canvas2 = FigureCanvas(fig2)
-        graph_layout.addWidget(canvas2)
-
-        # 3️⃣ Line Chart – Stock Movement Trend
+        # Line Chart – Stock Movement Trend
         fig3, ax3 = plt.subplots(figsize=(4.5, 3.8))
         ax3.plot(data["stock_movement"]["labels"], data["stock_movement"]["stockin"], marker='o', label="Stock In")
         ax3.plot(data["stock_movement"]["labels"], data["stock_movement"]["stockout"], marker='o', label="Stock Out")
         ax3.set_title("Stock Movement Trend", fontsize=10)
-        ax3.set_xlabel("Product ID")
-        ax3.set_ylabel("Quantity")
         ax3.legend()
-        canvas3 = FigureCanvas(fig3)
-        graph_layout.addWidget(canvas3)
+        self.graph_layout.addWidget(FigureCanvas(fig3))
 
-        main_layout.addLayout(graph_layout)
+        # ✅ Update Low Stock Table
+        low_stock_data = data["low_stock_products"]
+        self.low_stock_table.setRowCount(len(low_stock_data))
+        for row, (product_name, type_name, quantity, reorder_level) in enumerate(low_stock_data):
+            self.low_stock_table.setItem(row, 0, QTableWidgetItem(product_name))
+            self.low_stock_table.setItem(row, 1, QTableWidgetItem(type_name))
+
+            qty_item = QTableWidgetItem(str(quantity))
+            if quantity <= reorder_level:
+                qty_item.setForeground(QColor("red"))
+            elif quantity <= reorder_level + 5:
+                qty_item.setForeground(QColor("orange"))
+            self.low_stock_table.setItem(row, 2, qty_item)
+            self.low_stock_table.setItem(row, 3, QTableWidgetItem(str(reorder_level)))
 
     def fetch_dashboard_data(self):
         cursor = self.conn.cursor()
-
-        # Total categories
         cursor.execute("SELECT COUNT(*) FROM category")
         total_categories = cursor.fetchone()[0]
-
-        # Total products
         cursor.execute("SELECT COUNT(*) FROM products")
         total_products = cursor.fetchone()[0]
-
-        # Total issued items (sum of stockout quantities)
         cursor.execute("SELECT IFNULL(SUM(Quantity), 0) FROM stockout")
         total_stockout = cursor.fetchone()[0]
-
-        # Category distribution (join category → type → products)
         cursor.execute("""
-                       SELECT c.CategoryName, COUNT(p.ProductID)
-                       FROM category c
-                                JOIN type t ON c.CategoryID = t.CategoryID
-                                JOIN products p ON t.TypeID = p.TypeID
-                       GROUP BY c.CategoryName
-                       """)
+            SELECT c.CategoryName, COUNT(p.ProductID)
+            FROM category c
+            JOIN type t ON c.CategoryID = t.CategoryID
+            JOIN products p ON t.TypeID = p.TypeID
+            GROUP BY c.CategoryName
+        """)
         category_distribution = cursor.fetchall()
-
-        # Top 5 products by quantity
         cursor.execute("""
-                       SELECT ProductName, Quantity
-                       FROM products
-                       ORDER BY Quantity DESC LIMIT 5
-                       """)
+            SELECT ProductName, Quantity
+            FROM products
+            ORDER BY Quantity DESC LIMIT 5
+        """)
         top_products = cursor.fetchall()
-
-        # Stock movement trend (total stockin/out per product)
         cursor.execute("""
-                       SELECT p.ProductID,
-                              IFNULL(SUM(si.Quantity), 0) AS StockIn,
-                              IFNULL(SUM(so.Quantity), 0) AS StockOut
-                       FROM products p
-                                LEFT JOIN stockin si ON p.ProductID = si.ProductID
-                                LEFT JOIN stockout so ON p.ProductID = so.ProductID
-                       GROUP BY p.ProductID
-                       ORDER BY p.ProductID ASC
-                       """)
+            SELECT p.ProductID,
+                   IFNULL(SUM(si.Quantity), 0) AS StockIn,
+                   IFNULL(SUM(so.Quantity), 0) AS StockOut
+            FROM products p
+            LEFT JOIN stockin si ON p.ProductID = si.ProductID
+            LEFT JOIN stockout so ON p.ProductID = so.ProductID
+            GROUP BY p.ProductID
+            ORDER BY p.ProductID ASC
+        """)
         rows = cursor.fetchall()
         labels = [str(r[0]) for r in rows]
         stockin = [r[1] for r in rows]
         stockout = [r[2] for r in rows]
-
+        cursor.execute("""
+            SELECT p.ProductName, t.TypeName, p.Quantity, p.ReorderLevel
+            FROM products p
+            JOIN type t ON p.TypeID = t.TypeID
+            WHERE p.Quantity <= p.ReorderLevel + 5
+            ORDER BY p.Quantity ASC
+        """)
+        low_stock_products = cursor.fetchall()
         cursor.close()
         return {
             "total_categories": total_categories,
@@ -157,6 +246,7 @@ class DashboardPanel(QWidget):
                 "stockin": stockin,
                 "stockout": stockout,
             },
+            "low_stock_products": low_stock_products,
         }
 class StaffDashboard(QWidget):
     def __init__(self, login_widget, username, conn):
