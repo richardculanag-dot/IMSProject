@@ -19,21 +19,20 @@ class DashboardPanel(QWidget):
         title.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.main_layout.addWidget(title)
 
-        # ✅ Store widgets for refresh later
+        # Store widgets for refresh later
         self.summary_layout = QHBoxLayout()
         self.graph_layout = QHBoxLayout()
 
         self.main_layout.addLayout(self.summary_layout)
         self.main_layout.addLayout(self.graph_layout)
 
-        # ✅ Add low stock header layout (label + refresh button)
         low_stock_header = QHBoxLayout()
         self.low_stock_label = QLabel("Low Stock Products")
         self.low_stock_label.setStyleSheet("color: white; font-size: 14px; font-weight: bold;")
         self.low_stock_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
         low_stock_header.addWidget(self.low_stock_label)
 
-        # ✅ Refresh button
+        # Refresh button
         self.refresh_btn = QPushButton("⟳ Refresh")
         self.refresh_btn.setFixedWidth(100)
         self.refresh_btn.setStyleSheet("""
@@ -53,7 +52,7 @@ class DashboardPanel(QWidget):
 
         self.main_layout.addLayout(low_stock_header)
 
-        # ✅ Create low stock table
+        # Create low stock table
         self.low_stock_table = QTableWidget()
         self.low_stock_table.setColumnCount(4)
         self.low_stock_table.setHorizontalHeaderLabels(["Product Name", "Type", "Quantity", "Reorder Level"])
@@ -178,7 +177,7 @@ class DashboardPanel(QWidget):
         self.graph_layout.addWidget(FigureCanvas(fig3))
         plt.close(fig3)
 
-        # ✅ Update Low Stock Table
+        # Update Low Stock Table
         low_stock_data = data["low_stock_products"]
         self.low_stock_table.setRowCount(len(low_stock_data))
         for row, (product_name, type_name, quantity, reorder_level) in enumerate(low_stock_data):
@@ -1452,7 +1451,7 @@ class StaffDashboard(QWidget):
             try:
                 cursor = self.conn.cursor()
 
-                # 1️⃣ Update products table
+                # Update products table
                 cursor.execute("""
                     UPDATE products
                     SET Quantity=%s,
@@ -1461,7 +1460,7 @@ class StaffDashboard(QWidget):
                     WHERE ProductID = %s
                 """, (new_qty, new_total, date_issued, product_id))
 
-                # 2️⃣ Get the current user’s AccountID
+                # Get the current user’s AccountID
                 cursor.execute("SELECT AccountID FROM accounts WHERE Username = %s", (self.username,))
                 account = cursor.fetchone()
                 if account:
@@ -1479,7 +1478,7 @@ class StaffDashboard(QWidget):
                 self.conn.commit()
                 cursor.close()
 
-                # ✅ Success message
+                # Success message
                 msg = QMessageBox(dialog)
                 msg.setWindowTitle("Success")
                 msg.setText(f"Stock issued for ProductID {product_id}!\nNew quantity: {new_qty}")
@@ -1746,7 +1745,7 @@ class StaffDashboard(QWidget):
             stockout_label.setGeometry(20, 280, 200, 30)
             stockout_label.setStyleSheet("color: white; font-size: 18px; font-weight: bold;")
 
-            # 🔄 Refresh Button beside Stock Out label
+            # Refresh Button beside Stock Out label
             refresh_btn = QPushButton("⟳ Refresh", self.history_panel)
             refresh_btn.setGeometry(950, 280, 170, 30)
             refresh_btn.setStyleSheet("""
@@ -1902,4 +1901,5 @@ class StaffDashboard(QWidget):
         if msg.clickedButton() == logout_btn:
             self.close()
             self.login_widget.setVisible(True)
+
 
