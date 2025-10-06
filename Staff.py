@@ -149,6 +149,7 @@ class DashboardPanel(QWidget):
         else:
             ax1.text(0.5, 0.5, "No Data", ha='center', va='center')
         self.graph_layout.addWidget(FigureCanvas(fig1))
+        plt.close(fig1)
 
         # Bar Graph – Top 5 Products by Quantity
         fig2, ax2 = plt.subplots(figsize=(4.5, 2.2))
@@ -166,6 +167,7 @@ class DashboardPanel(QWidget):
         else:
             ax2.text(0.5, 0.5, "No Data", ha='center', va='center')
         self.graph_layout.addWidget(FigureCanvas(fig2))
+        plt.close(fig2)
 
         # Line Chart – Stock Movement Trend
         fig3, ax3 = plt.subplots(figsize=(4.5, 3.8))
@@ -174,6 +176,7 @@ class DashboardPanel(QWidget):
         ax3.set_title("Stock Movement Trend", fontsize=10)
         ax3.legend()
         self.graph_layout.addWidget(FigureCanvas(fig3))
+        plt.close(fig3)
 
         # ✅ Update Low Stock Table
         low_stock_data = data["low_stock_products"]
@@ -1899,3 +1902,4 @@ class StaffDashboard(QWidget):
         if msg.clickedButton() == logout_btn:
             self.close()
             self.login_widget.setVisible(True)
+
