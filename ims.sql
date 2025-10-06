@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 05, 2025 at 10:22 PM
+-- Generation Time: Oct 06, 2025 at 07:09 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -106,23 +106,23 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`ProductID`, `ProductName`, `TypeID`, `SupplierID`, `Price`, `Quantity`, `Total`, `ReorderLevel`, `DateSupplied`) VALUES
-(1, 'Acer 24-inch Monitor', 1, 1, 7500, 15, 112500, 5, '2025-09-25 10:00:00'),
-(2, 'Logitech K120 Keyboard', 2, 2, 800, 40, 32000, 10, '2025-09-26 09:30:00'),
+(1, 'Acer 24-inch Monitor', 1, 1, 7500, 20, 150000, 5, '2025-10-06 12:49:31'),
+(2, 'Logitech K120 Keyboard', 2, 2, 800, 20, 16000, 10, '2025-10-06 12:48:55'),
 (3, 'Razer DeathAdder Mouse', 3, 3, 2500, 25, 62500, 8, '2025-09-26 13:00:00'),
-(4, 'Redragon Zeus Headset', 4, 1, 3200, 18, 57600, 5, '2025-09-27 11:45:00'),
+(4, 'Redragon Zeus Headset', 4, 1, 3200, 8, 25600, 5, '2025-10-06 12:49:02'),
 (5, 'Canon Pixma Printer', 7, 5, 6200, 10, 62000, 3, '2025-09-28 08:15:00'),
 (6, 'Intel Core i5 CPU', 9, 2, 9500, 12, 114000, 4, '2025-09-29 14:20:00'),
 (7, 'Corsair 16GB RAM', 10, 3, 4800, 30, 144000, 10, '2025-09-29 09:00:00'),
 (8, 'ASUS B550 Motherboard', 12, 5, 8800, 9, 79200, 3, '2025-09-30 15:30:00'),
 (9, 'Seagate 1TB HDD', 13, 1, 2400, 20, 48000, 5, '2025-10-01 10:10:00'),
 (10, 'TP-Link WiFi Router', 15, 4, 1800, 25, 45000, 7, '2025-10-02 16:50:00'),
-(11, 'D-Link Network Switch', 16, 4, 2300, 14, 32200, 4, '2025-10-02 17:10:00'),
+(11, 'D-Link Network Switch', 16, 4, 2300, 4, 9200, 4, '2025-10-06 12:46:25'),
 (12, 'Logitech Webcam C270', 8, 3, 2200, 22, 48400, 6, '2025-10-03 09:40:00'),
-(13, 'HyperX Mouse Pad', 23, 5, 500, 50, 25000, 15, '2025-10-03 12:00:00'),
+(13, 'HyperX Mouse Pad', 23, 5, 500, 30, 15000, 15, '2025-10-06 12:49:11'),
 (14, 'Sandisk 1TB External Drive', 24, 1, 3200, 16, 51200, 5, '2025-10-04 13:15:00'),
-(15, 'HDMI Cable 2m', 21, 2, 250, 60, 15000, 20, '2025-10-04 14:25:00'),
-(16, 'Intel Core i3 CPU', 9, 6, 10000, 35, 350000, 5, '2025-10-06 01:56:18'),
-(17, 'Intel Core i7 CPU', 9, 2, 11000, 35, 385000, 5, '2025-10-06 01:56:24');
+(15, 'HDMI Cable 2m', 21, 2, 250, 20, 5000, 20, '2025-10-06 12:45:58'),
+(16, 'Intel Core i3 CPU', 9, 6, 10000, 25, 250000, 5, '2025-10-06 12:46:40'),
+(17, 'Intel Core i7 CPU', 9, 2, 11000, 5, 55000, 5, '2025-10-06 12:45:49');
 
 -- --------------------------------------------------------
 
@@ -148,7 +148,10 @@ INSERT INTO `stockin` (`StockInID`, `ProductID`, `AccountID`, `Quantity`) VALUES
 (10, 16, 4, 10),
 (11, 17, 4, 5),
 (12, 16, 4, 5),
-(13, 17, 4, 10);
+(13, 17, 4, 10),
+(15, 16, 4, 5),
+(16, 16, 4, 20),
+(18, 1, 4, 10);
 
 -- --------------------------------------------------------
 
@@ -171,7 +174,16 @@ INSERT INTO `stockout` (`StockOutID`, `ProductID`, `AccountID`, `Quantity`) VALU
 (5, 16, 3, 5),
 (6, 16, 4, 10),
 (7, 16, 4, 5),
-(8, 17, 4, 10);
+(8, 17, 4, 10),
+(10, 15, 4, 35),
+(11, 16, 4, 35),
+(12, 17, 4, 30),
+(13, 15, 4, 5),
+(14, 11, 4, 10),
+(16, 1, 4, 5),
+(17, 2, 4, 20),
+(18, 4, 4, 10),
+(19, 13, 4, 20);
 
 -- --------------------------------------------------------
 
@@ -326,19 +338,19 @@ ALTER TABLE `logs`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `ProductID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `ProductID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `stockin`
 --
 ALTER TABLE `stockin`
-  MODIFY `StockInID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `StockInID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `stockout`
 --
 ALTER TABLE `stockout`
-  MODIFY `StockOutID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `StockOutID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `suppliers`
