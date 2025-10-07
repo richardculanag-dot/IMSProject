@@ -60,6 +60,7 @@ class DashboardPanel(QWidget):
         self.low_stock_table.verticalHeader().setVisible(False)
         self.low_stock_table.setStyleSheet("""
             QTableWidget {
+                color: black;
                 background-color: #f8f9fa;
                 alternate-background-color: #e9ecef;
                 gridline-color: #b0b0b0;
@@ -312,14 +313,10 @@ class StaffDashboard(QWidget):
         self.category_btn.setGeometry(20, 310, 120, 40)
         self.category_btn.clicked.connect(self.show_category_panel)
 
-        self.history_btn = CustomButton("History", self.buttonPanel,
-                                        "rgb(60, 146, 193)", "cyan", "cyan", self.button_group)
-        self.history_btn.setGeometry(20, 390, 120, 40)
-        self.history_btn.clicked.connect(self.show_history_panel)
 
         self.account_btn = CustomButton("Account", self.buttonPanel,
                                         "rgb(60, 146, 193)", "cyan", "cyan", self.button_group)
-        self.account_btn.setGeometry(20, 470, 120, 40)
+        self.account_btn.setGeometry(20, 390, 120, 40)
         self.account_btn.clicked.connect(self.show_account_panel)
 
         self.back_btn = CustomButton("←", self.buttonPanel,
@@ -409,6 +406,15 @@ class StaffDashboard(QWidget):
                     border: 2px solid rgb(70, 130, 250);
                     background-color: white;
                 }
+                QMessageBox {
+                    background-color: rgb(40,40,40);
+                    color: white;
+                    font-size: 14px;
+                }
+                QMessageBox QLabel {
+                    color: white;
+                }
+                
             """)
             self.search_bar.setGeometry(100, 60, 200, 30)
             self.search_bar.textChanged.connect(self.search_product)
@@ -430,6 +436,7 @@ class StaffDashboard(QWidget):
             self.table.setColumnWidth(1, 200)
             self.table.setStyleSheet("""
                 QTableWidget {
+                    color: black;
                     background-color: #f8f9fa;
                     alternate-background-color: #e9ecef;
                     gridline-color: #b0b0b0;
@@ -503,6 +510,14 @@ class StaffDashboard(QWidget):
                     width: 0px;
                     background: none;
                 }
+                QMessageBox {
+                    background-color: rgb(40,40,40);
+                    color: white;
+                    font-size: 14px;
+                }
+                QMessageBox QLabel {
+                    color: white;
+                }
             """)
             self.table.setAlternatingRowColors(True)
             self.table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
@@ -512,17 +527,17 @@ class StaffDashboard(QWidget):
             self.table.verticalHeader().setVisible(False)
 
             # CRUD Buttons
-            self.add_btn = QPushButton("Add", self.inventory_panel)
-            self.add_btn.setGeometry(20, 460, 150, 30)
-            self.add_btn.clicked.connect(self.add_product)
-
-            self.update_btn = QPushButton("Update", self.inventory_panel)
-            self.update_btn.setGeometry(185, 460, 150, 30)
-            self.update_btn.clicked.connect(self.update_product)
-
-            self.delete_btn = QPushButton("Delete", self.inventory_panel)
-            self.delete_btn.setGeometry(350, 460, 150, 30)
-            self.delete_btn.clicked.connect(self.delete_product)
+            # self.add_btn = QPushButton("Add", self.inventory_panel)
+            # self.add_btn.setGeometry(20, 460, 150, 30)
+            # self.add_btn.clicked.connect(self.add_product)
+            #
+            # self.update_btn = QPushButton("Update", self.inventory_panel)
+            # self.update_btn.setGeometry(185, 460, 150, 30)
+            # self.update_btn.clicked.connect(self.update_product)
+            #
+            # self.delete_btn = QPushButton("Delete", self.inventory_panel)
+            # self.delete_btn.setGeometry(350, 460, 150, 30)
+            # self.delete_btn.clicked.connect(self.delete_product)
 
             self.stock_in_btn = QPushButton("Stock In", self.inventory_panel)
             self.stock_in_btn.setGeometry(330, 60, 150, 30)
@@ -534,9 +549,6 @@ class StaffDashboard(QWidget):
 
             # Shared button style
             for btn in [
-                self.add_btn,
-                self.update_btn,
-                self.delete_btn,
                 self.stock_in_btn,
                 self.stock_out_btn,
             ]:
@@ -552,6 +564,14 @@ class StaffDashboard(QWidget):
                     }
                     QPushButton:pressed {
                         background-color: rgb(30,130,180);
+                    }
+                    QMessageBox {
+                        background-color: rgb(40,40,40);
+                        color: white;
+                        font-size: 14px;
+                    }
+                    QMessageBox QLabel {
+                        color: white;
                     }
                 """)
 
@@ -646,487 +666,503 @@ class StaffDashboard(QWidget):
         # ADD PRODUCT (placeholder)
         # -----------------------------------------------------
 
-    def add_product(self):
-        dialog = QDialog(self)
-        dialog.setWindowTitle("Add New Product")
-        dialog.setFixedSize(400, 600)
-        dialog.setStyleSheet("""
-            QDialog {
-                background-color: rgb(70,70,70);
-                border-radius: 10px;
-            }
-            QLabel {
-                font-size: 14px;
-                font-weight: bold;
-                color: white;
-                background-color: transparent;
-            }
-            QLineEdit {
-                background-color: white;
-                border: 1px solid rgb(120,120,120);
-                border-radius: 10px;
-                padding: 4px;
-                font-size: 13px;
-                color: black;
-            }
-            QComboBox {
-                background-color: rgb(100, 100, 100);
-                border: 1px solid rgb(120,120,120);
-                border-radius: 10px;
-                padding: 4px;
-                font-size: 13px;
-                color: black;
-            }
-            QComboBox QAbstractItemView {               
-                background-color: rgb(255,255,255);    
-                selection-background-color: rgb(70,130,250);  
-                selection-color: white;                 
-                color: black;                            
-                border-radius: 6px;
-            }
-            QLineEdit:focus {
-                border: 1px solid rgb(70,130,250);
-                background-color: white;
-            }
-            QComboBox:focus {
-                border: 1px solid rgb(70,130,250);
-                background-color: rgb(100, 100, 100);
-            }
-            QPushButton {
-                background-color: rgb(50,150,200);
-                color: white;
-                font-weight: bold;
-                border-radius: 6px;
-                padding: 6px;
-            }
-            QPushButton:hover {
-                background-color: rgb(70,170,220);
-            }
-            QPushButton:pressed {
-                background-color: rgb(30,130,180);
-            }
-        """)
-
-        layout = QVBoxLayout(dialog)
-        layout.setSpacing(10)
-
-        # === Input Fields ===
-        name_label = QLabel("Product Name:")
-        name_input = QLineEdit()
-
-        price_label = QLabel("Price:")
-        price_input = QLineEdit()
-        price_input.setPlaceholderText("Enter price (e.g., 99.99)")
-
-        quantity_label = QLabel("Quantity:")
-        quantity_input = QLineEdit()
-        quantity_input.setPlaceholderText("Enter quantity (e.g., 10)")
-
-        total_label = QLabel("Total:")
-        total_input = QLineEdit()
-        total_input.setReadOnly(True)
-        total_input.setStyleSheet("background-color: rgb(200,200,200); color: #333; border-radius: 6px;")
-
-        reorder_label = QLabel("Reorder Level:")
-        reorder_input = QLineEdit()
-        reorder_input.setPlaceholderText("Enter reorder level (e.g., 5)")
-
-        type_label = QLabel("Type:")
-        type_combo = QComboBox()
-
-        supplier_label = QLabel("Supplier:")
-        supplier_input = QLineEdit()
-        supplier_input.setPlaceholderText("Enter supplier name")
-
-        # cursor = self.conn.cursor()
-        # cursor.execute("SELECT TypeID, TypeName FROM type")
-        # for tid, tname in cursor.fetchall():
-        #     type_combo.addItem(tname, tid)
-
-        # Load dropdowns from DB
-        try:
-            cursor = self.conn.cursor()
-            cursor.execute("SELECT TypeID, TypeName FROM type")
-            for tid, tname in cursor.fetchall():
-                type_combo.addItem(tname, tid)
-
-        except Exception as e:
-            QMessageBox.critical(dialog, "Database Error", f"Failed to check/insert supplier:\n{str(e)}")
-            return
-
-        # === Auto calculate total ===
-        def calculate_total():
-            try:
-                price = float(price_input.text()) if price_input.text() else 0
-                qty = int(quantity_input.text()) if quantity_input.text() else 0
-                total_input.setText(f"{price * qty:.2f}")
-            except ValueError:
-                total_input.setText("")
-
-        price_input.textChanged.connect(calculate_total)
-        quantity_input.textChanged.connect(calculate_total)
-
-        # === Buttons ===
-        btn_layout = QHBoxLayout()
-        add_btn = QPushButton("Add Product")
-        cancel_btn = QPushButton("Cancel")
-        btn_layout.addWidget(add_btn)
-        btn_layout.addWidget(cancel_btn)
-        cancel_btn.clicked.connect(dialog.reject)
-
-        # === Add Widgets to Layout ===
-        layout.addWidget(name_label)
-        layout.addWidget(name_input)
-        layout.addWidget(price_label)
-        layout.addWidget(price_input)
-        layout.addWidget(quantity_label)
-        layout.addWidget(quantity_input)
-        layout.addWidget(total_label)
-        layout.addWidget(total_input)
-        layout.addWidget(reorder_label)
-        layout.addWidget(reorder_input)
-        layout.addWidget(type_label)
-        layout.addWidget(type_combo)
-        layout.addWidget(supplier_label)
-        layout.addWidget(supplier_input)
-        layout.addLayout(btn_layout)
-
-        # === Add Product Logic ===
-        def save_product():
-            name = name_input.text().strip()
-            price = price_input.text().strip()
-            quantity = quantity_input.text().strip()
-            total = total_input.text().strip()
-            reorder = reorder_input.text().strip()
-            type_id = type_combo.currentData()
-            supplier_name = supplier_input.text().strip()
-            if not supplier_name:
-                QMessageBox.warning(dialog, "Input Error", "Supplier name is required.")
-                return
-
-            # Check if supplier exists
-            try:
-                cursor = self.conn.cursor()
-                cursor.execute("SELECT SupplierID FROM suppliers WHERE SupplierName=%s", (supplier_name,))
-                result = cursor.fetchone()
-
-                if result:
-                    supplier_id = result[0]  # existing supplier
-                else:
-                    # Insert new supplier
-                    cursor.execute("INSERT INTO suppliers (SupplierName) VALUES (%s)", (supplier_name,))
-                    self.conn.commit()
-                    supplier_id = cursor.lastrowid  # get the newly inserted SupplierID
-
-                cursor.close()
-            except Exception as e:
-                QMessageBox.critical(dialog, "Database Error", f"Failed to check/insert supplier:\n{str(e)}")
-                return
-            date_supplied = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-            # Validation
-            if not all([name, price, quantity, total, reorder]):
-                QMessageBox.warning(dialog, "Input Error", "All fields are required.")
-                return
-            try:
-                price = float(price)
-                quantity = int(quantity)
-                total = float(total)
-                reorder = int(reorder)
-            except ValueError:
-                QMessageBox.warning(dialog, "Input Error", "Price, Quantity, and Reorder Level must be numeric.")
-                return
-
-            # Confirmation box
-            confirm = QMessageBox.question(
-                dialog,
-                "Confirm Add Product",
-                f"Are you sure you want to add this product?\n\n"
-                f"Name: {name}\nPrice: {price}\nQuantity: {quantity}\n"
-                f"Total: {total}\nReorder Level: {reorder}",
-                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-            )
-
-            if confirm != QMessageBox.StandardButton.Yes:
-                return  # user cancelled
-
-            # Insert into DB
-            try:
-                cursor = self.conn.cursor()
-                cursor.execute("""
-                               INSERT INTO products (ProductName, TypeID, SupplierID, Price, Quantity, Total,
-                                                     ReorderLevel, DateSupplied)
-                               VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-                               """, (name, type_id, supplier_id, price, quantity, total, reorder, date_supplied))
-                self.conn.commit()
-                cursor.close()
-                QMessageBox.information(dialog, "Success", "Product added successfully.")
-                dialog.accept()
-                self.load_products()  # refresh table
-            except Exception as e:
-                QMessageBox.critical(dialog, "Database Error", f"Failed to insert product:\n{str(e)}")
-
-        add_btn.clicked.connect(save_product)
-        dialog.exec()
-
-        # -----------------------------------------------------
-        # UPDATE PRODUCT
-        # -----------------------------------------------------
-
-    def update_product(self):
-        row = self.table.currentRow()
-        if row == -1:
-            QMessageBox.warning(self, "No product selected", "Select a product to update first.")
-            return
-
-        # Fetch current product details
-        product_id = self.table.item(row, 0).text()
-        product_name = self.table.item(row, 1).text()
-        product_type = self.table.item(row, 2).text()
-        supplier_name = self.table.item(row, 3).text()
-        price = self.table.item(row, 4).text()
-        quantity = self.table.item(row, 5).text()
-        total = self.table.item(row, 6).text()
-        reorder = self.table.item(row, 7).text()
-        date_supplied = self.table.item(row, 8).text()  # fetch current DateSupplied
-
-        dialog = QDialog(self)
-        dialog.setWindowTitle(f"Update Product ID: {product_id}")
-        dialog.setFixedSize(400, 650)
-        dialog.setStyleSheet(""" 
-            QDialog { background-color: rgb(70,70,70); border-radius: 10px; }
-            QLabel { font-size: 14px; font-weight: bold; color: white; background-color: rgb(70, 70, 70) }
-            QLineEdit { background-color: white; border: 1px solid rgb(120,120,120); border-radius: 10px; padding: 4px; font-size: 13px; color: black; }
-            QComboBox { background-color: rgb(100,100,100); border: 1px solid rgb(120,120,120); border-radius: 10px; padding: 4px; font-size: 13px; color: black; }
-            QComboBox QAbstractItemView { background-color: white; selection-background-color: rgb(70,130,250); selection-color: white; color: black; border-radius: 6px; }
-            QPushButton { background-color: rgb(50,150,200); color: white; font-weight: bold; border-radius: 6px; padding: 6px; }
-            QPushButton:hover { background-color: rgb(70,170,220); }
-            QPushButton:pressed { background-color: rgb(30,130,180); }
-            QLineEdit:disabled { background-color: rgb(200,200,200); color: #333; }
-            QDateTimeEdit { background-color: white; border: 1px solid rgb(120,120,120); border-radius: 10px; padding: 4px; font-size: 13px; color: black; }
-        """)
-
-        layout = QVBoxLayout(dialog)
-        layout.setSpacing(10)
-
-        # === Input Fields ===
-        id_label = QLabel("Product ID:")
-        id_input = QLineEdit(product_id)
-        id_input.setDisabled(True)
-
-        name_label = QLabel("Product Name:")
-        name_input = QLineEdit(product_name)
-
-        price_label = QLabel("Price:")
-        price_input = QLineEdit(price)
-
-        quantity_label = QLabel("Quantity:")
-        quantity_input = QLineEdit(quantity)
-
-        total_label = QLabel("Total:")
-        total_input = QLineEdit(total)
-        total_input.setDisabled(True)
-
-        reorder_label = QLabel("Reorder Level:")
-        reorder_input = QLineEdit(reorder)
-
-        type_label = QLabel("Type:")
-        type_combo = QComboBox()
-        # Load types from DB
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT TypeID, TypeName FROM type")
-        type_mapping = {}
-        for tid, tname in cursor.fetchall():
-            type_combo.addItem(tname, tid)
-            type_mapping[tname] = tid
-        cursor.close()
-        if product_type in type_mapping:
-            type_combo.setCurrentText(product_type)
-
-        supplier_label = QLabel("Supplier:")
-        supplier_input = QLineEdit(supplier_name)
-
-        # --- NEW DateSupplied Field ---
-        date_label = QLabel("Date Supplied:")
-        date_input = QDateTimeEdit()
-        date_input.setDisplayFormat("yyyy-MM-dd HH:mm:ss")
-        date_input.setCalendarPopup(True)
-        # Prefill current DateSupplied
-        date_input.setDateTime(QDateTime.fromString(date_supplied, "yyyy-MM-dd HH:mm:ss"))
-
-        # === Auto-calculate total when price or quantity changes ===
-        def calculate_total():
-            try:
-                p = float(price_input.text()) if price_input.text() else 0
-                q = int(quantity_input.text()) if quantity_input.text() else 0
-                total_input.setText(f"{p * q:.2f}")
-            except ValueError:
-                total_input.setText("")
-
-        price_input.textChanged.connect(calculate_total)
-        quantity_input.textChanged.connect(calculate_total)
-
-        # === Buttons ===
-        btn_layout = QHBoxLayout()
-        save_btn = QPushButton("Update Product")
-        cancel_btn = QPushButton("Cancel")
-        btn_layout.addWidget(save_btn)
-        btn_layout.addWidget(cancel_btn)
-        cancel_btn.clicked.connect(dialog.reject)
-
-        # === Add Widgets to Layout ===
-        layout.addWidget(id_label)
-        layout.addWidget(id_input)
-        layout.addWidget(name_label)
-        layout.addWidget(name_input)
-        layout.addWidget(price_label)
-        layout.addWidget(price_input)
-        layout.addWidget(quantity_label)
-        layout.addWidget(quantity_input)
-        layout.addWidget(total_label)
-        layout.addWidget(total_input)
-        layout.addWidget(reorder_label)
-        layout.addWidget(reorder_input)
-        layout.addWidget(type_label)
-        layout.addWidget(type_combo)
-        layout.addWidget(supplier_label)
-        layout.addWidget(supplier_input)
-        layout.addWidget(date_label)
-        layout.addWidget(date_input)
-        layout.addLayout(btn_layout)
-
-        # === Save updated product to DB ===
-        def save_update():
-            name = name_input.text().strip()
-            price_val = price_input.text().strip()
-            quantity_val = quantity_input.text().strip()
-            total_val = total_input.text().strip()
-            reorder_val = reorder_input.text().strip()
-            type_id = type_combo.currentData()
-            supplier_name_val = supplier_input.text().strip()
-            date_supplied_val = date_input.dateTime().toString("yyyy-MM-dd HH:mm:ss")  # new date
-
-            if not supplier_name_val:
-                QMessageBox.warning(dialog, "Input Error", "Supplier name is required.")
-                return
-
-            # Check or insert supplier
-            try:
-                cursor = self.conn.cursor()
-                cursor.execute("SELECT SupplierID FROM suppliers WHERE SupplierName=%s", (supplier_name_val,))
-                result = cursor.fetchone()
-                if result:
-                    supplier_id = result[0]
-                else:
-                    cursor.execute("INSERT INTO suppliers (SupplierName) VALUES (%s)", (supplier_name_val,))
-                    self.conn.commit()
-                    supplier_id = cursor.lastrowid
-                cursor.close()
-            except Exception as e:
-                QMessageBox.critical(dialog, "Database Error", f"Failed to check/insert supplier:\n{str(e)}")
-                return
-
-            # Validation
-            if not all([name, price_val, quantity_val, reorder_val]):
-                QMessageBox.warning(dialog, "Input Error", "All fields are required.")
-                return
-
-            try:
-                price_val = float(price_val)
-                quantity_val = int(quantity_val)
-                reorder_val = int(reorder_val)
-                total_val = price_val * quantity_val
-            except ValueError:
-                QMessageBox.warning(dialog, "Input Error", "Price, Quantity, and Reorder Level must be numeric.")
-                return
-
-            # Confirmation
-            confirm = QMessageBox.question(
-                dialog,
-                "Confirm Update",
-                f"Update product {product_id} with new details?\n\n"
-                f"Name: {name}\nPrice: {price_val}\nQuantity: {quantity_val}\n"
-                f"Total: {total_val}\nReorder Level: {reorder_val}\nDate Supplied: {date_supplied_val}",
-                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-            )
-
-            if confirm != QMessageBox.StandardButton.Yes:
-                return
-
-            # Update DB
-            try:
-                cursor = self.conn.cursor()
-                cursor.execute("""
-                               UPDATE products
-                               SET ProductName=%s,
-                                   TypeID=%s,
-                                   SupplierID=%s,
-                                   Price=%s,
-                                   Quantity=%s,
-                                   Total=%s,
-                                   ReorderLevel=%s,
-                                   DateSupplied=%s
-                               WHERE ProductID = %s
-                               """, (name, type_id, supplier_id, price_val, quantity_val, total_val, reorder_val,
-                                     date_supplied_val, product_id))
-                self.conn.commit()
-                cursor.close()
-                QMessageBox.information(dialog, "Success", f"Product {product_id} updated successfully.")
-                dialog.accept()
-                self.load_products()
-            except Exception as e:
-                QMessageBox.critical(dialog, "Database Error", f"Failed to update product:\n{str(e)}")
-
-        save_btn.clicked.connect(save_update)
-        dialog.exec()
-
-        # -----------------------------------------------------
-        # DELETE PRODUCT
-        # -----------------------------------------------------
-
-    def delete_product(self):
-        row = self.table.currentRow()
-        if row == -1:
-            QMessageBox.warning(self, "No product selected", "Select a product to delete.")
-            return
-
-        product_id = self.table.item(row, 0).text()
-
-        # Confirm deletion
-        confirm = QMessageBox.question(
-            self,
-            "Confirm Delete",
-            f"Are you sure you want to permanently delete Product ID {product_id}?\n"
-            "This will also delete all related stock-in and stock-out records.",
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-        )
-
-        if confirm != QMessageBox.StandardButton.Yes:
-            return
-
-        try:
-            cursor = self.conn.cursor()
-
-            # Delete related records in stockin and stockout first
-            cursor.execute("DELETE FROM stockin WHERE ProductID = %s", (product_id,))
-            cursor.execute("DELETE FROM stockout WHERE ProductID = %s", (product_id,))
-
-            # Now delete the product itself
-            cursor.execute("DELETE FROM products WHERE ProductID = %s", (product_id,))
-            self.conn.commit()
-            cursor.close()
-
-            # Remove from table
-            self.table.removeRow(row)
-
-            QMessageBox.information(
-                self,
-                "Deleted",
-                f"Product ID {product_id} and its related stock-in/out records have been deleted successfully."
-            )
-
-        except Exception as e:
-            QMessageBox.critical(self, "Database Error", f"Failed to delete product:\n{str(e)}")
+    # def add_product(self):
+    #     dialog = QDialog(self)
+    #     dialog.setWindowTitle("Add New Product")
+    #     dialog.setFixedSize(400, 600)
+    #     dialog.setStyleSheet("""
+    #         QDialog {
+    #             background-color: rgb(70,70,70);
+    #             border-radius: 10px;
+    #         }
+    #         QLabel {
+    #             font-size: 14px;
+    #             font-weight: bold;
+    #             color: white;
+    #             background-color: transparent;
+    #         }
+    #         QLineEdit {
+    #             background-color: white;
+    #             border: 1px solid rgb(120,120,120);
+    #             border-radius: 10px;
+    #             padding: 4px;
+    #             font-size: 13px;
+    #             color: black;
+    #         }
+    #         QComboBox {
+    #             background-color: rgb(100, 100, 100);
+    #             border: 1px solid rgb(120,120,120);
+    #             border-radius: 10px;
+    #             padding: 4px;
+    #             font-size: 13px;
+    #             color: black;
+    #         }
+    #         QComboBox QAbstractItemView {
+    #             background-color: rgb(255,255,255);
+    #             selection-background-color: rgb(70,130,250);
+    #             selection-color: white;
+    #             color: black;
+    #             border-radius: 6px;
+    #         }
+    #         QLineEdit:focus {
+    #             border: 1px solid rgb(70,130,250);
+    #             background-color: white;
+    #         }
+    #         QComboBox:focus {
+    #             border: 1px solid rgb(70,130,250);
+    #             background-color: rgb(100, 100, 100);
+    #         }
+    #         QPushButton {
+    #             background-color: rgb(50,150,200);
+    #             color: white;
+    #             font-weight: bold;
+    #             border-radius: 6px;
+    #             padding: 6px;
+    #         }
+    #         QPushButton:hover {
+    #             background-color: rgb(70,170,220);
+    #         }
+    #         QPushButton:pressed {
+    #             background-color: rgb(30,130,180);
+    #         }
+    #         QMessageBox {
+    #             background-color: rgb(40,40,40);
+    #             color: white;
+    #             font-size: 14px;
+    #         }
+    #         QMessageBox QLabel {
+    #             color: white;
+    #         }
+    #     """)
+    #
+    #     layout = QVBoxLayout(dialog)
+    #     layout.setSpacing(10)
+    #
+    #     # === Input Fields ===
+    #     name_label = QLabel("Product Name:")
+    #     name_input = QLineEdit()
+    #
+    #     price_label = QLabel("Price:")
+    #     price_input = QLineEdit()
+    #     price_input.setPlaceholderText("Enter price (e.g., 99.99)")
+    #
+    #     quantity_label = QLabel("Quantity:")
+    #     quantity_input = QLineEdit()
+    #     quantity_input.setPlaceholderText("Enter quantity (e.g., 10)")
+    #
+    #     total_label = QLabel("Total:")
+    #     total_input = QLineEdit()
+    #     total_input.setReadOnly(True)
+    #     total_input.setStyleSheet("background-color: rgb(200,200,200); color: #333; border-radius: 6px;")
+    #
+    #     reorder_label = QLabel("Reorder Level:")
+    #     reorder_input = QLineEdit()
+    #     reorder_input.setPlaceholderText("Enter reorder level (e.g., 5)")
+    #
+    #     type_label = QLabel("Type:")
+    #     type_combo = QComboBox()
+    #
+    #     supplier_label = QLabel("Supplier:")
+    #     supplier_input = QLineEdit()
+    #     supplier_input.setPlaceholderText("Enter supplier name")
+    #
+    #     # cursor = self.conn.cursor()
+    #     # cursor.execute("SELECT TypeID, TypeName FROM type")
+    #     # for tid, tname in cursor.fetchall():
+    #     #     type_combo.addItem(tname, tid)
+    #
+    #     # Load dropdowns from DB
+    #     try:
+    #         cursor = self.conn.cursor()
+    #         cursor.execute("SELECT TypeID, TypeName FROM type")
+    #         for tid, tname in cursor.fetchall():
+    #             type_combo.addItem(tname, tid)
+    #
+    #     except Exception as e:
+    #         QMessageBox.critical(dialog, "Database Error", f"Failed to check/insert supplier:\n{str(e)}")
+    #         return
+    #
+    #     # === Auto calculate total ===
+    #     def calculate_total():
+    #         try:
+    #             price = float(price_input.text()) if price_input.text() else 0
+    #             qty = int(quantity_input.text()) if quantity_input.text() else 0
+    #             total_input.setText(f"{price * qty:.2f}")
+    #         except ValueError:
+    #             total_input.setText("")
+    #
+    #     price_input.textChanged.connect(calculate_total)
+    #     quantity_input.textChanged.connect(calculate_total)
+    #
+    #     # === Buttons ===
+    #     btn_layout = QHBoxLayout()
+    #     add_btn = QPushButton("Add Product")
+    #     cancel_btn = QPushButton("Cancel")
+    #     btn_layout.addWidget(add_btn)
+    #     btn_layout.addWidget(cancel_btn)
+    #     cancel_btn.clicked.connect(dialog.reject)
+    #
+    #     # === Add Widgets to Layout ===
+    #     layout.addWidget(name_label)
+    #     layout.addWidget(name_input)
+    #     layout.addWidget(price_label)
+    #     layout.addWidget(price_input)
+    #     layout.addWidget(quantity_label)
+    #     layout.addWidget(quantity_input)
+    #     layout.addWidget(total_label)
+    #     layout.addWidget(total_input)
+    #     layout.addWidget(reorder_label)
+    #     layout.addWidget(reorder_input)
+    #     layout.addWidget(type_label)
+    #     layout.addWidget(type_combo)
+    #     layout.addWidget(supplier_label)
+    #     layout.addWidget(supplier_input)
+    #     layout.addLayout(btn_layout)
+    #
+    #     # === Add Product Logic ===
+    #     def save_product():
+    #         name = name_input.text().strip()
+    #         price = price_input.text().strip()
+    #         quantity = quantity_input.text().strip()
+    #         total = total_input.text().strip()
+    #         reorder = reorder_input.text().strip()
+    #         type_id = type_combo.currentData()
+    #         supplier_name = supplier_input.text().strip()
+    #         if not supplier_name:
+    #             QMessageBox.warning(dialog, "Input Error", "Supplier name is required.")
+    #             return
+    #
+    #         # Check if supplier exists
+    #         try:
+    #             cursor = self.conn.cursor()
+    #             cursor.execute("SELECT SupplierID FROM suppliers WHERE SupplierName=%s", (supplier_name,))
+    #             result = cursor.fetchone()
+    #
+    #             if result:
+    #                 supplier_id = result[0]  # existing supplier
+    #             else:
+    #                 # Insert new supplier
+    #                 cursor.execute("INSERT INTO suppliers (SupplierName) VALUES (%s)", (supplier_name,))
+    #                 self.conn.commit()
+    #                 supplier_id = cursor.lastrowid  # get the newly inserted SupplierID
+    #
+    #             cursor.close()
+    #         except Exception as e:
+    #             QMessageBox.critical(dialog, "Database Error", f"Failed to check/insert supplier:\n{str(e)}")
+    #             return
+    #         date_supplied = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    #
+    #         # Validation
+    #         if not all([name, price, quantity, total, reorder]):
+    #             QMessageBox.warning(dialog, "Input Error", "All fields are required.")
+    #             return
+    #         try:
+    #             price = float(price)
+    #             quantity = int(quantity)
+    #             total = float(total)
+    #             reorder = int(reorder)
+    #         except ValueError:
+    #             QMessageBox.warning(dialog, "Input Error", "Price, Quantity, and Reorder Level must be numeric.")
+    #             return
+    #
+    #         # Confirmation box
+    #         confirm = QMessageBox.question(
+    #             dialog,
+    #             "Confirm Add Product",
+    #             f"Are you sure you want to add this product?\n\n"
+    #             f"Name: {name}\nPrice: {price}\nQuantity: {quantity}\n"
+    #             f"Total: {total}\nReorder Level: {reorder}",
+    #             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+    #         )
+    #
+    #         if confirm != QMessageBox.StandardButton.Yes:
+    #             return  # user cancelled
+    #
+    #         # Insert into DB
+    #         try:
+    #             cursor = self.conn.cursor()
+    #             cursor.execute("""
+    #                            INSERT INTO products (ProductName, TypeID, SupplierID, Price, Quantity, Total,
+    #                                                  ReorderLevel, DateSupplied)
+    #                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+    #                            """, (name, type_id, supplier_id, price, quantity, total, reorder, date_supplied))
+    #             self.conn.commit()
+    #             cursor.close()
+    #             QMessageBox.information(dialog, "Success", "Product added successfully.")
+    #             dialog.accept()
+    #             self.load_products()  # refresh table
+    #         except Exception as e:
+    #             QMessageBox.critical(dialog, "Database Error", f"Failed to insert product:\n{str(e)}")
+    #
+    #     add_btn.clicked.connect(save_product)
+    #     dialog.exec()
+    #
+    #     # -----------------------------------------------------
+    #     # UPDATE PRODUCT
+    #     # -----------------------------------------------------
+    #
+    # def update_product(self):
+    #     row = self.table.currentRow()
+    #     if row == -1:
+    #         QMessageBox.warning(self, "No product selected", "Select a product to update first.")
+    #         return
+    #
+    #     # Fetch current product details
+    #     product_id = self.table.item(row, 0).text()
+    #     product_name = self.table.item(row, 1).text()
+    #     product_type = self.table.item(row, 2).text()
+    #     supplier_name = self.table.item(row, 3).text()
+    #     price = self.table.item(row, 4).text()
+    #     quantity = self.table.item(row, 5).text()
+    #     total = self.table.item(row, 6).text()
+    #     reorder = self.table.item(row, 7).text()
+    #     date_supplied = self.table.item(row, 8).text()  # fetch current DateSupplied
+    #
+    #     dialog = QDialog(self)
+    #     dialog.setWindowTitle(f"Update Product ID: {product_id}")
+    #     dialog.setFixedSize(400, 650)
+    #     dialog.setStyleSheet("""
+    #         QDialog { background-color: rgb(70,70,70); border-radius: 10px; }
+    #         QLabel { font-size: 14px; font-weight: bold; color: white; background-color: rgb(70, 70, 70) }
+    #         QLineEdit { background-color: white; border: 1px solid rgb(120,120,120); border-radius: 10px; padding: 4px; font-size: 13px; color: black; }
+    #         QComboBox { background-color: rgb(100,100,100); border: 1px solid rgb(120,120,120); border-radius: 10px; padding: 4px; font-size: 13px; color: black; }
+    #         QComboBox QAbstractItemView { background-color: white; selection-background-color: rgb(70,130,250); selection-color: white; color: black; border-radius: 6px; }
+    #         QPushButton { background-color: rgb(50,150,200); color: white; font-weight: bold; border-radius: 6px; padding: 6px; }
+    #         QPushButton:hover { background-color: rgb(70,170,220); }
+    #         QPushButton:pressed { background-color: rgb(30,130,180); }
+    #         QLineEdit:disabled { background-color: rgb(200,200,200); color: #333; }
+    #         QDateTimeEdit { background-color: white; border: 1px solid rgb(120,120,120); border-radius: 10px; padding: 4px; font-size: 13px; color: black; }
+    #         QMessageBox {
+    #             background-color: rgb(40,40,40);
+    #             color: white;
+    #             font-size: 14px;
+    #         }
+    #         QMessageBox QLabel {
+    #             color: white;
+    #         }
+    #     """)
+    #
+    #     layout = QVBoxLayout(dialog)
+    #     layout.setSpacing(10)
+    #
+    #     # === Input Fields ===
+    #     id_label = QLabel("Product ID:")
+    #     id_input = QLineEdit(product_id)
+    #     id_input.setDisabled(True)
+    #
+    #     name_label = QLabel("Product Name:")
+    #     name_input = QLineEdit(product_name)
+    #
+    #     price_label = QLabel("Price:")
+    #     price_input = QLineEdit(price)
+    #
+    #     quantity_label = QLabel("Quantity:")
+    #     quantity_input = QLineEdit(quantity)
+    #
+    #     total_label = QLabel("Total:")
+    #     total_input = QLineEdit(total)
+    #     total_input.setDisabled(True)
+    #
+    #     reorder_label = QLabel("Reorder Level:")
+    #     reorder_input = QLineEdit(reorder)
+    #
+    #     type_label = QLabel("Type:")
+    #     type_combo = QComboBox()
+    #     # Load types from DB
+    #     cursor = self.conn.cursor()
+    #     cursor.execute("SELECT TypeID, TypeName FROM type")
+    #     type_mapping = {}
+    #     for tid, tname in cursor.fetchall():
+    #         type_combo.addItem(tname, tid)
+    #         type_mapping[tname] = tid
+    #     cursor.close()
+    #     if product_type in type_mapping:
+    #         type_combo.setCurrentText(product_type)
+    #
+    #     supplier_label = QLabel("Supplier:")
+    #     supplier_input = QLineEdit(supplier_name)
+    #
+    #     # --- NEW DateSupplied Field ---
+    #     date_label = QLabel("Date Supplied:")
+    #     date_input = QDateTimeEdit()
+    #     date_input.setDisplayFormat("yyyy-MM-dd HH:mm:ss")
+    #     date_input.setCalendarPopup(True)
+    #     # Prefill current DateSupplied
+    #     date_input.setDateTime(QDateTime.fromString(date_supplied, "yyyy-MM-dd HH:mm:ss"))
+    #
+    #     # === Auto-calculate total when price or quantity changes ===
+    #     def calculate_total():
+    #         try:
+    #             p = float(price_input.text()) if price_input.text() else 0
+    #             q = int(quantity_input.text()) if quantity_input.text() else 0
+    #             total_input.setText(f"{p * q:.2f}")
+    #         except ValueError:
+    #             total_input.setText("")
+    #
+    #     price_input.textChanged.connect(calculate_total)
+    #     quantity_input.textChanged.connect(calculate_total)
+    #
+    #     # === Buttons ===
+    #     btn_layout = QHBoxLayout()
+    #     save_btn = QPushButton("Update Product")
+    #     cancel_btn = QPushButton("Cancel")
+    #     btn_layout.addWidget(save_btn)
+    #     btn_layout.addWidget(cancel_btn)
+    #     cancel_btn.clicked.connect(dialog.reject)
+    #
+    #     # === Add Widgets to Layout ===
+    #     layout.addWidget(id_label)
+    #     layout.addWidget(id_input)
+    #     layout.addWidget(name_label)
+    #     layout.addWidget(name_input)
+    #     layout.addWidget(price_label)
+    #     layout.addWidget(price_input)
+    #     layout.addWidget(quantity_label)
+    #     layout.addWidget(quantity_input)
+    #     layout.addWidget(total_label)
+    #     layout.addWidget(total_input)
+    #     layout.addWidget(reorder_label)
+    #     layout.addWidget(reorder_input)
+    #     layout.addWidget(type_label)
+    #     layout.addWidget(type_combo)
+    #     layout.addWidget(supplier_label)
+    #     layout.addWidget(supplier_input)
+    #     layout.addWidget(date_label)
+    #     layout.addWidget(date_input)
+    #     layout.addLayout(btn_layout)
+    #
+    #     # === Save updated product to DB ===
+    #     def save_update():
+    #         name = name_input.text().strip()
+    #         price_val = price_input.text().strip()
+    #         quantity_val = quantity_input.text().strip()
+    #         total_val = total_input.text().strip()
+    #         reorder_val = reorder_input.text().strip()
+    #         type_id = type_combo.currentData()
+    #         supplier_name_val = supplier_input.text().strip()
+    #         date_supplied_val = date_input.dateTime().toString("yyyy-MM-dd HH:mm:ss")  # new date
+    #
+    #         if not supplier_name_val:
+    #             QMessageBox.warning(dialog, "Input Error", "Supplier name is required.")
+    #             return
+    #
+    #         # Check or insert supplier
+    #         try:
+    #             cursor = self.conn.cursor()
+    #             cursor.execute("SELECT SupplierID FROM suppliers WHERE SupplierName=%s", (supplier_name_val,))
+    #             result = cursor.fetchone()
+    #             if result:
+    #                 supplier_id = result[0]
+    #             else:
+    #                 cursor.execute("INSERT INTO suppliers (SupplierName) VALUES (%s)", (supplier_name_val,))
+    #                 self.conn.commit()
+    #                 supplier_id = cursor.lastrowid
+    #             cursor.close()
+    #         except Exception as e:
+    #             QMessageBox.critical(dialog, "Database Error", f"Failed to check/insert supplier:\n{str(e)}")
+    #             return
+    #
+    #         # Validation
+    #         if not all([name, price_val, quantity_val, reorder_val]):
+    #             QMessageBox.warning(dialog, "Input Error", "All fields are required.")
+    #             return
+    #
+    #         try:
+    #             price_val = float(price_val)
+    #             quantity_val = int(quantity_val)
+    #             reorder_val = int(reorder_val)
+    #             total_val = price_val * quantity_val
+    #         except ValueError:
+    #             QMessageBox.warning(dialog, "Input Error", "Price, Quantity, and Reorder Level must be numeric.")
+    #             return
+    #
+    #         # Confirmation
+    #         confirm = QMessageBox.question(
+    #             dialog,
+    #             "Confirm Update",
+    #             f"Update product {product_id} with new details?\n\n"
+    #             f"Name: {name}\nPrice: {price_val}\nQuantity: {quantity_val}\n"
+    #             f"Total: {total_val}\nReorder Level: {reorder_val}\nDate Supplied: {date_supplied_val}",
+    #             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+    #         )
+    #
+    #         if confirm != QMessageBox.StandardButton.Yes:
+    #             return
+    #
+    #         # Update DB
+    #         try:
+    #             cursor = self.conn.cursor()
+    #             cursor.execute("""
+    #                            UPDATE products
+    #                            SET ProductName=%s,
+    #                                TypeID=%s,
+    #                                SupplierID=%s,
+    #                                Price=%s,
+    #                                Quantity=%s,
+    #                                Total=%s,
+    #                                ReorderLevel=%s,
+    #                                DateSupplied=%s
+    #                            WHERE ProductID = %s
+    #                            """, (name, type_id, supplier_id, price_val, quantity_val, total_val, reorder_val,
+    #                                  date_supplied_val, product_id))
+    #             self.conn.commit()
+    #             cursor.close()
+    #             QMessageBox.information(dialog, "Success", f"Product {product_id} updated successfully.")
+    #             dialog.accept()
+    #             self.load_products()
+    #         except Exception as e:
+    #             QMessageBox.critical(dialog, "Database Error", f"Failed to update product:\n{str(e)}")
+    #
+    #     save_btn.clicked.connect(save_update)
+    #     dialog.exec()
+    #
+    #     # -----------------------------------------------------
+    #     # DELETE PRODUCT
+    #     # -----------------------------------------------------
+    #
+    # def delete_product(self):
+    #     row = self.table.currentRow()
+    #     if row == -1:
+    #         QMessageBox.warning(self, "No product selected", "Select a product to delete.")
+    #         return
+    #
+    #     product_id = self.table.item(row, 0).text()
+    #
+    #     # Confirm deletion
+    #     confirm = QMessageBox.question(
+    #         self,
+    #         "Confirm Delete",
+    #         f"Are you sure you want to permanently delete Product ID {product_id}?\n"
+    #         "This will also delete all related stock-in and stock-out records.",
+    #         QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+    #     )
+    #
+    #     if confirm != QMessageBox.StandardButton.Yes:
+    #         return
+    #
+    #     try:
+    #         cursor = self.conn.cursor()
+    #
+    #         # Delete related records in stockin and stockout first
+    #         cursor.execute("DELETE FROM stockin WHERE ProductID = %s", (product_id,))
+    #         cursor.execute("DELETE FROM stockout WHERE ProductID = %s", (product_id,))
+    #
+    #         # Now delete the product itself
+    #         cursor.execute("DELETE FROM products WHERE ProductID = %s", (product_id,))
+    #         self.conn.commit()
+    #         cursor.close()
+    #
+    #         # Remove from table
+    #         self.table.removeRow(row)
+    #
+    #         QMessageBox.information(
+    #             self,
+    #             "Deleted",
+    #             f"Product ID {product_id} and its related stock-in/out records have been deleted successfully."
+    #         )
+    #
+    #     except Exception as e:
+    #         QMessageBox.critical(self, "Database Error", f"Failed to delete product:\n{str(e)}")
 
         # -----------------------------------------------------
         # STOCK IN
@@ -1139,11 +1175,71 @@ class StaffDashboard(QWidget):
         dialog.setStyleSheet("""
             QDialog { background-color: rgb(70,70,70); border-radius: 10px; }
             QLabel { font-size: 14px; color: white; font-weight: bold; }
-            QLineEdit { background-color: white; border-radius: 6px; padding: 4px; font-size: 13px; }
+            QLineEdit { color: black; background-color: white; border-radius: 6px; padding: 4px; font-size: 13px; }
             QPushButton { background-color: rgb(50,150,200); color: white; font-weight: bold; border-radius: 6px; padding: 6px; }
             QPushButton:hover { background-color: rgb(70,170,220); }
             QPushButton:pressed { background-color: rgb(30,130,180); }
-            QTableWidget { background-color: #f8f9fa; alternate-background-color: #e9ecef; gridline-color: #b0b0b0; border-radius: 6px; font-size: 13px; }
+            QTableWidget {
+                    color: black;
+                    background-color: #f8f9fa;
+                    alternate-background-color: #e9ecef;
+                    gridline-color: #b0b0b0;
+                    border-radius: 10px;
+                    font-size: 13px;
+                    selection-background-color: rgb(70,130,250);
+                    selection-color: white;
+                }
+
+                QHeaderView::section {
+                    background-color: rgb(50,150,200);
+                    color: white;
+                    font-weight: bold;
+                    border: none;
+                    padding: 6px;
+                }
+                QHeaderView::section:first {
+                    border-top-left-radius: 10px;
+                }
+
+                /* Rightmost header cell */
+                QHeaderView::section:last {
+                    border-top-right-radius: 10px;
+                }
+
+                QTableCornerButton::section {
+                    background-color: rgb(50,150,200);
+                    border: none;
+                }
+
+                /* ===== Vertical Scrollbar ===== */
+                QScrollBar:vertical {
+                    background: #e2e2e2;
+                    width: 10px;
+                    margin: 2px 0 2px 0;
+                    border-radius: 5px;
+                }
+                QScrollBar::handle:vertical {
+                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                        stop:0 rgb(130,180,230), stop:1 rgb(90,150,210));
+                    border-radius: 20px;
+                    min-height: 20px;
+                }
+                QScrollBar::handle:vertical:hover {
+                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                        stop:0 rgb(150,200,250), stop:1 rgb(100,160,220));
+                }
+                QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+                    height: 0px;
+                    background: none;
+                }
+                QMessageBox {
+                    background-color: rgb(40,40,40);
+                    color: white;
+                    font-size: 14px;
+                }
+                QMessageBox QLabel {
+                    color: white;
+                }
         """)
 
         layout = QVBoxLayout(dialog)
@@ -1188,6 +1284,7 @@ class StaffDashboard(QWidget):
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         table.setAlternatingRowColors(True)
         table.setFixedHeight(250)
+        table.verticalHeader().setVisible(False)
         layout.addWidget(table)
 
         # Load products
@@ -1286,8 +1383,18 @@ class StaffDashboard(QWidget):
                 self.conn.commit()
                 cursor.close()
 
-                QMessageBox.information(dialog, "Success",
-                                        f"Stock updated for ProductID {product_id}!\nNew quantity: {new_qty}")
+                # Success message
+                msg = QMessageBox(dialog)
+                msg.setWindowTitle("Success")
+                msg.setText(f"Stock updated for ProductID {product_id}!\nNew quantity: {new_qty}")
+                msg.setIcon(QMessageBox.Icon.Information)
+                msg.setStyleSheet("""
+                                    QMessageBox { background-color: white; color: black; font-size: 14px; font-weight: bold; }
+                                    QPushButton { background-color: rgb(50,150,200); color: white; border-radius: 6px; padding: 4px; font-weight: bold; }
+                                    QPushButton:hover { background-color: rgb(70,170,220); }
+                                    QPushButton:pressed { background-color: rgb(30,130,180); }
+                                """)
+                msg.exec()
 
                 dialog.accept()
                 self.load_products()
@@ -1317,11 +1424,71 @@ class StaffDashboard(QWidget):
         dialog.setStyleSheet("""
             QDialog { background-color: rgb(70,70,70); border-radius: 10px; }
             QLabel { font-size: 14px; color: white; font-weight: bold; }
-            QLineEdit { background-color: white; border-radius: 6px; padding: 4px; font-size: 13px; }
+            QLineEdit { color: black; background-color: white; border-radius: 6px; padding: 4px; font-size: 13px; }
             QPushButton { background-color: rgb(50,150,200); color: white; font-weight: bold; border-radius: 6px; padding: 6px; }
             QPushButton:hover { background-color: rgb(70,170,220); }
             QPushButton:pressed { background-color: rgb(30,130,180); }
-            QTableWidget { background-color: #f8f9fa; alternate-background-color: #e9ecef; gridline-color: #b0b0b0; border-radius: 6px; font-size: 13px; }
+            QTableWidget {
+                    color: black;
+                    background-color: #f8f9fa;
+                    alternate-background-color: #e9ecef;
+                    gridline-color: #b0b0b0;
+                    border-radius: 10px;
+                    font-size: 13px;
+                    selection-background-color: rgb(70,130,250);
+                    selection-color: white;
+                }
+
+                QHeaderView::section {
+                    background-color: rgb(50,150,200);
+                    color: white;
+                    font-weight: bold;
+                    border: none;
+                    padding: 6px;
+                }
+                QHeaderView::section:first {
+                    border-top-left-radius: 10px;
+                }
+
+                /* Rightmost header cell */
+                QHeaderView::section:last {
+                    border-top-right-radius: 10px;
+                }
+
+                QTableCornerButton::section {
+                    background-color: rgb(50,150,200);
+                    border: none;
+                }
+
+                /* ===== Vertical Scrollbar ===== */
+                QScrollBar:vertical {
+                    background: #e2e2e2;
+                    width: 10px;
+                    margin: 2px 0 2px 0;
+                    border-radius: 5px;
+                }
+                QScrollBar::handle:vertical {
+                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                        stop:0 rgb(130,180,230), stop:1 rgb(90,150,210));
+                    border-radius: 20px;
+                    min-height: 20px;
+                }
+                QScrollBar::handle:vertical:hover {
+                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                        stop:0 rgb(150,200,250), stop:1 rgb(100,160,220));
+                }
+                QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+                    height: 0px;
+                    background: none;
+                }
+                QMessageBox {
+                    background-color: rgb(40,40,40);
+                    color: white;
+                    font-size: 14px;
+                }
+                QMessageBox QLabel {
+                    color: white;
+                }
         """)
 
         layout = QVBoxLayout(dialog)
@@ -1365,6 +1532,7 @@ class StaffDashboard(QWidget):
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         table.setAlternatingRowColors(True)
         table.setFixedHeight(250)
+        table.verticalHeader().setVisible(False)
         layout.addWidget(table)
 
         # === Load products ===
@@ -1451,7 +1619,7 @@ class StaffDashboard(QWidget):
             try:
                 cursor = self.conn.cursor()
 
-                # Update products table
+                # Update products
                 cursor.execute("""
                     UPDATE products
                     SET Quantity=%s,
@@ -1484,7 +1652,7 @@ class StaffDashboard(QWidget):
                 msg.setText(f"Stock issued for ProductID {product_id}!\nNew quantity: {new_qty}")
                 msg.setIcon(QMessageBox.Icon.Information)
                 msg.setStyleSheet("""
-                    QMessageBox { background-color: rgb(70, 70, 70); color: white; font-size: 14px; font-weight: bold; }
+                    QMessageBox { background-color: white; color: black; font-size: 14px; font-weight: bold; }
                     QPushButton { background-color: rgb(50,150,200); color: white; border-radius: 6px; padding: 4px; font-weight: bold; }
                     QPushButton:hover { background-color: rgb(70,170,220); }
                     QPushButton:pressed { background-color: rgb(30,130,180); }
@@ -1525,6 +1693,7 @@ class StaffDashboard(QWidget):
             # === Common table style ===
             table_style = """
                 QTableWidget {
+                    color: black;
                     background-color: #f8f9fa;
                     alternate-background-color: #e9ecef;
                     gridline-color: #b0b0b0;
@@ -1533,7 +1702,7 @@ class StaffDashboard(QWidget):
                     selection-background-color: rgb(70,130,250);
                     selection-color: white;
                 }
-
+                
                 QHeaderView::section {
                     background-color: rgb(50,150,200);
                     color: white;
@@ -1575,6 +1744,36 @@ class StaffDashboard(QWidget):
                 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
                     height: 0px;
                     background: none;
+                }
+
+                /* ===== Horizontal Scrollbar (bottom) ===== */
+                QScrollBar:horizontal {
+                    background: #e2e2e2;
+                    height: 10px;
+                    margin: 0 2px 0 2px;
+                    border-radius: 5px;
+                }
+                QScrollBar::handle:horizontal {
+                    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                        stop:0 rgb(130,180,230), stop:1 rgb(90,150,210));
+                    border-radius: 20px;
+                    min-width: 20px;
+                }
+                QScrollBar::handle:horizontal:hover {
+                    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                        stop:0 rgb(150,200,250), stop:1 rgb(100,160,220));
+                }
+                QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+                    width: 0px;
+                    background: none;
+                }
+                QMessageBox {
+                    background-color: rgb(40,40,40);
+                    color: white;
+                    font-size: 14px;
+                }
+                QMessageBox QLabel {
+                    color: white;
                 }
             """
 
@@ -1689,157 +1888,224 @@ class StaffDashboard(QWidget):
 
         self.category_panel.show()
 
-    def show_history_panel(self):
-        self.hide_all_panels()
-
-        if not hasattr(self, 'history_panel') or self.history_panel is None:
-            self.history_panel = QWidget(self.analyticPanel)
-            self.history_panel.setGeometry(10, 10, 1140, 500)
-            self.history_panel.setStyleSheet("background-color: rgb(100, 100, 100); border-radius: 10px;")
-
-            # Header label
-            header_label = QLabel("Transaction History", self.history_panel)
-            header_label.setGeometry(20, 10, 400, 40)
-            header_label.setStyleSheet("color: white; font-size: 22px; font-weight: bold;")
-
-            table_style = """
-                QTableWidget {
-                    background-color: #f8f9fa;
-                    alternate-background-color: #e9ecef;
-                    gridline-color: #b0b0b0;
-                    border-radius: 10px;
-                    font-size: 13px;
-                    selection-background-color: rgb(70,130,250);
-                    selection-color: white;
-                }
-                QHeaderView::section {
-                    background-color: rgb(50,150,200);
-                    color: white;
-                    font-weight: bold;
-                    border: none;
-                    padding: 6px;
-                }
-            """
-
-            # Stock In label
-            stockin_label = QLabel("Stock Ins", self.history_panel)
-            stockin_label.setGeometry(20, 60, 200, 30)
-            stockin_label.setStyleSheet("color: white; font-size: 18px; font-weight: bold;")
-
-            # Stock In table
-            self.stockin_table = QTableWidget(self.history_panel)
-            self.stockin_table.setGeometry(20, 100, 1100, 160)
-            self.stockin_table.setColumnCount(8)
-            self.stockin_table.setHorizontalHeaderLabels([
-                "ID", "ProductID", "ProductName", "Supplier", "Price", "Quantity", "Total", "Stocked By"
-            ])
-            self.stockin_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-            self.stockin_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-            self.stockin_table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
-            self.stockin_table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-            self.stockin_table.verticalHeader().setVisible(False)
-            self.stockin_table.setStyleSheet(table_style)
-
-            # Stock Out label
-            stockout_label = QLabel("Stock Outs", self.history_panel)
-            stockout_label.setGeometry(20, 280, 200, 30)
-            stockout_label.setStyleSheet("color: white; font-size: 18px; font-weight: bold;")
-
-            # Refresh Button beside Stock Out label
-            refresh_btn = QPushButton("⟳ Refresh", self.history_panel)
-            refresh_btn.setGeometry(950, 280, 170, 30)
-            refresh_btn.setStyleSheet("""
-                QPushButton {
-                    background-color: rgb(50,150,200);
-                    color: white;
-                    font-size: 14px;
-                    font-weight: bold;
-                    border-radius: 6px;
-                    padding: 4px;
-                }
-                QPushButton:hover { background-color: rgb(70,170,220); }
-                QPushButton:pressed { background-color: rgb(30,130,180); }
-            """)
-
-            # Stock Out table
-            self.stockout_table = QTableWidget(self.history_panel)
-            self.stockout_table.setGeometry(20, 320, 1100, 160)
-            self.stockout_table.setColumnCount(8)
-            self.stockout_table.setHorizontalHeaderLabels([
-                "ID", "ProductID", "ProductName", "Supplier", "Price", "Quantity", "Total", "Stocked By"
-            ])
-            self.stockout_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-            self.stockout_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-            self.stockout_table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
-            self.stockout_table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-            self.stockout_table.verticalHeader().setVisible(False)
-            self.stockout_table.setStyleSheet(table_style)
-
-            # === Function to Load Data (used by refresh button and on open) ===
-            def load_history_data():
-                try:
-                    cursor = self.conn.cursor()
-                    # --- Stock In ---
-                    cursor.execute("""
-                                   SELECT s.StockInID,
-                                          p.ProductID,
-                                          p.ProductName,
-                                          sup.SupplierName,
-                                          p.Price,
-                                          s.Quantity                    AS QuantityAdded,
-                                          (p.Price * s.Quantity)        AS Total,
-                                          CONCAT(a.FName, ' ', a.LName) AS StockedBy
-                                   FROM stockin s
-                                            JOIN products p ON s.ProductID = p.ProductID
-                                            JOIN suppliers sup ON p.SupplierID = sup.SupplierID
-                                            JOIN accounts a ON s.AccountID = a.AccountID
-                                   ORDER BY s.StockInID DESC
-                                   """)
-                    stockins = cursor.fetchall()
-
-                    self.stockin_table.setRowCount(0)
-                    for row_data in stockins:
-                        row_idx = self.stockin_table.rowCount()
-                        self.stockin_table.insertRow(row_idx)
-                        for col, data in enumerate(row_data):
-                            self.stockin_table.setItem(row_idx, col, QTableWidgetItem(str(data)))
-
-                    # --- Stock Out ---
-                    cursor.execute("""
-                                   SELECT s.StockOutID,
-                                          p.ProductID,
-                                          p.ProductName,
-                                          sup.SupplierName,
-                                          p.Price,
-                                          s.Quantity                    AS QuantityIssued,
-                                          (p.Price * s.Quantity)        AS Total,
-                                          CONCAT(a.FName, ' ', a.LName) AS StockedBy
-                                   FROM stockout s
-                                            JOIN products p ON s.ProductID = p.ProductID
-                                            JOIN suppliers sup ON p.SupplierID = sup.SupplierID
-                                            JOIN accounts a ON s.AccountID = a.AccountID
-                                   ORDER BY s.StockOutID DESC
-                                   """)
-                    stockouts = cursor.fetchall()
-                    cursor.close()
-
-                    self.stockout_table.setRowCount(0)
-                    for row_data in stockouts:
-                        row_idx = self.stockout_table.rowCount()
-                        self.stockout_table.insertRow(row_idx)
-                        for col, data in enumerate(row_data):
-                            self.stockout_table.setItem(row_idx, col, QTableWidgetItem(str(data)))
-
-                except Exception as e:
-                    QMessageBox.critical(self, "Database Error", str(e))
-
-            # Connect the refresh button
-            refresh_btn.clicked.connect(load_history_data)
-
-            # Initial load
-            load_history_data()
-
-        self.history_panel.show()
+    # def show_history_panel(self):
+    #     self.hide_all_panels()
+    #
+    #     if not hasattr(self, 'history_panel') or self.history_panel is None:
+    #         self.history_panel = QWidget(self.analyticPanel)
+    #         self.history_panel.setGeometry(10, 10, 1140, 500)
+    #         self.history_panel.setStyleSheet("background-color: rgb(100, 100, 100); border-radius: 10px;")
+    #
+    #         # Header label
+    #         header_label = QLabel("Transaction History", self.history_panel)
+    #         header_label.setGeometry(20, 10, 400, 40)
+    #         header_label.setStyleSheet("color: white; font-size: 22px; font-weight: bold;")
+    #
+    #         table_style = """
+    #             QTableWidget {
+    #                 color: black;
+    #                 background-color: #f8f9fa;
+    #                 alternate-background-color: #e9ecef;
+    #                 gridline-color: #b0b0b0;
+    #                 border-radius: 10px;
+    #                 font-size: 13px;
+    #                 selection-background-color: rgb(70,130,250);
+    #                 selection-color: white;
+    #             }
+    #
+    #             QHeaderView::section {
+    #                 background-color: rgb(50,150,200);
+    #                 color: white;
+    #                 font-weight: bold;
+    #                 border: none;
+    #                 padding: 6px;
+    #             }
+    #             QHeaderView::section:first {
+    #                 border-top-left-radius: 10px;
+    #             }
+    #
+    #             /* Rightmost header cell */
+    #             QHeaderView::section:last {
+    #                 border-top-right-radius: 10px;
+    #             }
+    #
+    #             QTableCornerButton::section {
+    #                 background-color: rgb(50,150,200);
+    #                 border: none;
+    #             }
+    #
+    #             /* ===== Vertical Scrollbar ===== */
+    #             QScrollBar:vertical {
+    #                 background: #e2e2e2;
+    #                 width: 10px;
+    #                 margin: 2px 0 2px 0;
+    #                 border-radius: 5px;
+    #             }
+    #             QScrollBar::handle:vertical {
+    #                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+    #                     stop:0 rgb(130,180,230), stop:1 rgb(90,150,210));
+    #                 border-radius: 20px;
+    #                 min-height: 20px;
+    #             }
+    #             QScrollBar::handle:vertical:hover {
+    #                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+    #                     stop:0 rgb(150,200,250), stop:1 rgb(100,160,220));
+    #             }
+    #             QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    #                 height: 0px;
+    #                 background: none;
+    #             }
+    #
+    #             /* ===== Horizontal Scrollbar (bottom) ===== */
+    #             QScrollBar:horizontal {
+    #                 background: #e2e2e2;
+    #                 height: 10px;
+    #                 margin: 0 2px 0 2px;
+    #                 border-radius: 5px;
+    #             }
+    #             QScrollBar::handle:horizontal {
+    #                 background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+    #                     stop:0 rgb(130,180,230), stop:1 rgb(90,150,210));
+    #                 border-radius: 20px;
+    #                 min-width: 20px;
+    #             }
+    #             QScrollBar::handle:horizontal:hover {
+    #                 background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+    #                     stop:0 rgb(150,200,250), stop:1 rgb(100,160,220));
+    #             }
+    #             QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+    #                 width: 0px;
+    #                 background: none;
+    #             }
+    #             QMessageBox {
+    #                 background-color: rgb(40,40,40);
+    #                 color: white;
+    #                 font-size: 14px;
+    #             }
+    #             QMessageBox QLabel {
+    #                 color: white;
+    #             }
+    #         """
+    #
+    #         # Stock In label
+    #         stockin_label = QLabel("Stock Ins", self.history_panel)
+    #         stockin_label.setGeometry(20, 60, 200, 30)
+    #         stockin_label.setStyleSheet("color: white; font-size: 18px; font-weight: bold;")
+    #
+    #         # Stock In table
+    #         self.stockin_table = QTableWidget(self.history_panel)
+    #         self.stockin_table.setGeometry(20, 100, 1100, 160)
+    #         self.stockin_table.setColumnCount(8)
+    #         self.stockin_table.setHorizontalHeaderLabels([
+    #             "ID", "ProductID", "ProductName", "Supplier", "Price", "Quantity", "Total", "Stocked By"
+    #         ])
+    #         self.stockin_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+    #         self.stockin_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+    #         self.stockin_table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+    #         self.stockin_table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+    #         self.stockin_table.verticalHeader().setVisible(False)
+    #         self.stockin_table.setStyleSheet(table_style)
+    #
+    #         # Stock Out label
+    #         stockout_label = QLabel("Stock Outs", self.history_panel)
+    #         stockout_label.setGeometry(20, 280, 200, 30)
+    #         stockout_label.setStyleSheet("color: white; font-size: 18px; font-weight: bold;")
+    #
+    #         # Refresh Button beside Stock Out label
+    #         refresh_btn = QPushButton("⟳ Refresh", self.history_panel)
+    #         refresh_btn.setGeometry(950, 280, 170, 30)
+    #         refresh_btn.setStyleSheet("""
+    #             QPushButton {
+    #                 background-color: rgb(50,150,200);
+    #                 color: white;
+    #                 font-size: 14px;
+    #                 font-weight: bold;
+    #                 border-radius: 6px;
+    #                 padding: 4px;
+    #             }
+    #             QPushButton:hover { background-color: rgb(70,170,220); }
+    #             QPushButton:pressed { background-color: rgb(30,130,180); }
+    #         """)
+    #
+    #         # Stock Out table
+    #         self.stockout_table = QTableWidget(self.history_panel)
+    #         self.stockout_table.setGeometry(20, 320, 1100, 160)
+    #         self.stockout_table.setColumnCount(8)
+    #         self.stockout_table.setHorizontalHeaderLabels([
+    #             "ID", "ProductID", "ProductName", "Supplier", "Price", "Quantity", "Total", "Stocked By"
+    #         ])
+    #         self.stockout_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+    #         self.stockout_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+    #         self.stockout_table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+    #         self.stockout_table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+    #         self.stockout_table.verticalHeader().setVisible(False)
+    #         self.stockout_table.setStyleSheet(table_style)
+    #
+    #         # === Function to Load Data (used by refresh button and on open) ===
+    #         def load_history_data():
+    #             try:
+    #                 cursor = self.conn.cursor()
+    #                 # --- Stock In ---
+    #                 cursor.execute("""
+    #                                SELECT s.StockInID,
+    #                                       p.ProductID,
+    #                                       p.ProductName,
+    #                                       sup.SupplierName,
+    #                                       p.Price,
+    #                                       s.Quantity                    AS QuantityAdded,
+    #                                       (p.Price * s.Quantity)        AS Total,
+    #                                       CONCAT(a.FName, ' ', a.LName) AS StockedBy
+    #                                FROM stockin s
+    #                                         JOIN products p ON s.ProductID = p.ProductID
+    #                                         JOIN suppliers sup ON p.SupplierID = sup.SupplierID
+    #                                         JOIN accounts a ON s.AccountID = a.AccountID
+    #                                ORDER BY s.StockInID DESC
+    #                                """)
+    #                 stockins = cursor.fetchall()
+    #
+    #                 self.stockin_table.setRowCount(0)
+    #                 for row_data in stockins:
+    #                     row_idx = self.stockin_table.rowCount()
+    #                     self.stockin_table.insertRow(row_idx)
+    #                     for col, data in enumerate(row_data):
+    #                         self.stockin_table.setItem(row_idx, col, QTableWidgetItem(str(data)))
+    #
+    #                 # --- Stock Out ---
+    #                 cursor.execute("""
+    #                                SELECT s.StockOutID,
+    #                                       p.ProductID,
+    #                                       p.ProductName,
+    #                                       sup.SupplierName,
+    #                                       p.Price,
+    #                                       s.Quantity                    AS QuantityIssued,
+    #                                       (p.Price * s.Quantity)        AS Total,
+    #                                       CONCAT(a.FName, ' ', a.LName) AS StockedBy
+    #                                FROM stockout s
+    #                                         JOIN products p ON s.ProductID = p.ProductID
+    #                                         JOIN suppliers sup ON p.SupplierID = sup.SupplierID
+    #                                         JOIN accounts a ON s.AccountID = a.AccountID
+    #                                ORDER BY s.StockOutID DESC
+    #                                """)
+    #                 stockouts = cursor.fetchall()
+    #                 cursor.close()
+    #
+    #                 self.stockout_table.setRowCount(0)
+    #                 for row_data in stockouts:
+    #                     row_idx = self.stockout_table.rowCount()
+    #                     self.stockout_table.insertRow(row_idx)
+    #                     for col, data in enumerate(row_data):
+    #                         self.stockout_table.setItem(row_idx, col, QTableWidgetItem(str(data)))
+    #
+    #             except Exception as e:
+    #                 QMessageBox.critical(self, "Database Error", str(e))
+    #
+    #         # Connect the refresh button
+    #         refresh_btn.clicked.connect(load_history_data)
+    #
+    #         # Initial load
+    #         load_history_data()
+    #
+    #     self.history_panel.show()
 
     def show_account_panel(self):
         self.hide_all_panels()
@@ -1901,5 +2167,4 @@ class StaffDashboard(QWidget):
         if msg.clickedButton() == logout_btn:
             self.close()
             self.login_widget.setVisible(True)
-
 
