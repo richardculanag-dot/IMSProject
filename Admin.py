@@ -1842,37 +1842,41 @@ class AdminDashboard(QWidget):
             self.category_table = QTableWidget(self.category_panel)
             self.category_table.setGeometry(20, 60, 300, 420)
             self.category_table.setColumnCount(2)
+            self.category_table.setStyleSheet(table_style)
             self.category_table.setHorizontalHeaderLabels(["CategoryID", "CategoryName"])
             self.category_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
             self.category_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
             self.category_table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
             self.category_table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-            self.category_table.setStyleSheet(table_style)
+            self.category_table.setAlternatingRowColors(True)
+            self.category_table.setAlternatingRowColors(True)
             self.category_table.verticalHeader().setVisible(False)
 
             # === Type Table ===
             self.type_table = QTableWidget(self.category_panel)
             self.type_table.setGeometry(340, 60, 300, 420)
             self.type_table.setColumnCount(2)
+            self.type_table.setStyleSheet(table_style)
             self.type_table.setHorizontalHeaderLabels(["TypeID", "TypeName"])
             self.type_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
             self.type_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
             self.type_table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
             self.type_table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-            self.type_table.setStyleSheet(table_style)
+            self.type_table.setAlternatingRowColors(True)
             self.type_table.verticalHeader().setVisible(False)
 
             # === Product Table ===
             self.product_table = QTableWidget(self.category_panel)
             self.product_table.setGeometry(660, 60, 460, 420)
             self.product_table.setColumnCount(5)
+            self.product_table.setStyleSheet(table_style)
             self.product_table.setHorizontalHeaderLabels(
                 ["ProductID", "ProductName", "Price", "Quantity", "ReorderLevel"])
             self.product_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
             self.product_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
             self.product_table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
             self.product_table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-            self.product_table.setStyleSheet(table_style)
+            self.category_table.setAlternatingRowColors(True)
             self.product_table.verticalHeader().setVisible(False)
 
             # === Load categories from DB ===
@@ -2065,6 +2069,7 @@ class AdminDashboard(QWidget):
             self.stockin_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
             self.stockin_table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
             self.stockin_table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+            self.stockin_table.setAlternatingRowColors(True)
             self.stockin_table.verticalHeader().setVisible(False)
             self.stockin_table.setStyleSheet(table_style)
 
@@ -2101,6 +2106,7 @@ class AdminDashboard(QWidget):
             self.stockout_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
             self.stockout_table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
             self.stockout_table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+            self.stockout_table.setAlternatingRowColors(True)
             self.stockout_table.verticalHeader().setVisible(False)
             self.stockout_table.setStyleSheet(table_style)
 
@@ -2680,7 +2686,10 @@ class AdminDashboard(QWidget):
         if confirm == QMessageBox.StandardButton.No:
             return
 
+
         try:
+            account_id = self.users_table.item(selected, 0).text()
+
             cursor = self.conn.cursor()
             cursor.execute("DELETE FROM accounts WHERE AccountID=%s", (account_id,))
             self.conn.commit()
