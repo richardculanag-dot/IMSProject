@@ -1849,7 +1849,6 @@ class AdminDashboard(QWidget):
             self.category_table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
             self.category_table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
             self.category_table.setAlternatingRowColors(True)
-            self.category_table.setAlternatingRowColors(True)
             self.category_table.verticalHeader().setVisible(False)
 
             # === Type Table ===
@@ -1876,7 +1875,7 @@ class AdminDashboard(QWidget):
             self.product_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
             self.product_table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
             self.product_table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-            self.category_table.setAlternatingRowColors(True)
+            self.product_table.setAlternatingRowColors(True)
             self.product_table.verticalHeader().setVisible(False)
 
             # === Load categories from DB ===
@@ -1978,7 +1977,7 @@ class AdminDashboard(QWidget):
                     selection-background-color: rgb(70,130,250);
                     selection-color: white;
                 }
-                
+
                 QHeaderView::section {
                     background-color: rgb(50,150,200);
                     color: white;
@@ -2206,7 +2205,7 @@ class AdminDashboard(QWidget):
                     selection-background-color: rgb(70,130,250);
                     selection-color: white;
                 }
-                
+
                 QHeaderView::section {
                     background-color: rgb(50,150,200);
                     color: white;
