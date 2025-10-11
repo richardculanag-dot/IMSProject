@@ -1787,6 +1787,7 @@ class StaffDashboard(QWidget):
             self.category_table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
             self.category_table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
             self.category_table.setStyleSheet(table_style)
+            self.category_table.setAlternatingRowColors(True)
             self.category_table.verticalHeader().setVisible(False)
 
             # === Type Table ===
@@ -1799,6 +1800,7 @@ class StaffDashboard(QWidget):
             self.type_table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
             self.type_table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
             self.type_table.setStyleSheet(table_style)
+            self.type_table.setAlternatingRowColors(True)
             self.type_table.verticalHeader().setVisible(False)
 
             # === Product Table ===
@@ -1812,6 +1814,7 @@ class StaffDashboard(QWidget):
             self.product_table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
             self.product_table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
             self.product_table.setStyleSheet(table_style)
+            self.product_table.setAlternatingRowColors(True)
             self.product_table.verticalHeader().setVisible(False)
 
             # === Load categories from DB ===
@@ -2167,4 +2170,3 @@ class StaffDashboard(QWidget):
         if msg.clickedButton() == logout_btn:
             self.close()
             self.login_widget.setVisible(True)
-
